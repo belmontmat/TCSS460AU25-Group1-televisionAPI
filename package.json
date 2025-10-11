@@ -1,7 +1,7 @@
 {
-  "name": "@educational/tcss-460-helloworld-api",
-  "version": "1.0.0",
-  "description": "Educational HelloWorld API for TCSS-460 - Demonstrates Express.js, TypeScript, and modern API development patterns",
+  "name": "tcss460group1-tvdatabase",
+  "version": "0.1.0",
+  "description": "A system that allows users to retrieve information on thousands of television shows from our database.",
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
@@ -25,12 +25,16 @@
     "express",
     "nodejs",
     "api",
-    "educational",
     "tcss-460",
     "rest",
     "backend"
   ],
-  "author": "TCSS-460 Course",
+  "contributors": [
+    {"name": "Mathew Belmont"},
+    {"name": "Preston Sia"},
+    {"name": "Sean Miller"},
+    {"name": "Abdul Hassan"}
+  ],
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
@@ -64,10 +68,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "Educational repository for TCSS-460"
+    "url": "github:belmontmat/TCSS460AU25-Group1-televisionAPI"
   },
-  "bugs": {
-    "url": "Educational repository - file issues for learning purposes"
-  },
-  "homepage": "Educational API for learning Express.js and TypeScript"
+  "homepage": "https://github.com/belmontmat/TCSS460AU25-Group1-televisionAPI"
 }
