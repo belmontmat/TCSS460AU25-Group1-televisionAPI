@@ -1,0 +1,1119 @@
+openapi: 3.0.0
+info:
+  title: TV Database System API
+  description: |
+    A comprehensive API for retrieving information on thousands of television shows.
+    Users can search using various filters including genre, name, actors, ratings, and more.
+    Admin users can add, update, and delete show entries.
+    
+    **Contributors:** Preston Sia, Mathew Belmont, Sean Miller, Abdul Hassan
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@tvdatabase.com
+
+servers:
+  - url: https://api.tvdatabase.com/v1
+    description: Production server
+  - url: https://staging-api.tvdatabase.com/v1
+    description: Staging server
+
+tags:
+  - name: Shows
+    description: TV show information and filtering
+  - name: Actors
+    description: Actor information and their shows
+  - name: Genres
+    description: Genre listings
+  - name: Statistics
+    description: Database statistics and analytics
+  - name: Admin
+    description: Administrative operations (requires authentication)
+
+paths:
+  /shows:
+    get:
+      tags:
+        - Shows
+      summary: Get all TV shows
+      description: Retrieve a list of all TV shows in the database with optional filtering
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 1500
+                  page:
+                    type: integer
+                    example: 1
+                  limit:
+                    type: integer
+                    example: 50
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShowSummary'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /shows/filter:
+    get:
+      tags:
+        - Shows
+      summary: Filter TV shows
+      description: Search and filter TV shows using multiple criteria
+      parameters:
+        - name: actor
+          in: query
+          description: Filter by actor name (comma-separated for multiple)
+          schema:
+            type: string
+          example: "Tom Hanks,Bryan Cranston"
+        - name: genre
+          in: query
+          description: Filter by genre (comma-separated for multiple)
+          schema:
+            type: string
+          example: "Drama,Comedy"
+        - name: network
+          in: query
+          description: Filter by network name
+          schema:
+            type: string
+          example: "HBO"
+        - name: studio
+          in: query
+          description: Filter by studio/production company
+          schema:
+            type: string
+          example: "Netflix"
+        - name: status
+          in: query
+          description: Filter by show status
+          schema:
+            type: string
+            enum: [active, canceled, ended]
+          example: "active"
+        - name: rating
+          in: query
+          description: Minimum TMDb rating (0-10)
+          schema:
+            type: number
+            minimum: 0
+            maximum: 10
+          example: 8.0
+        - name: year
+          in: query
+          description: Filter by first air date year
+          schema:
+            type: integer
+          example: 2020
+        - name: decade
+          in: query
+          description: Filter by decade (e.g., 1990, 2000, 2010)
+          schema:
+            type: integer
+          example: 2010
+        - name: startDate
+          in: query
+          description: Filter shows that aired on or after this date (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+          example: "2020-01-01"
+        - name: endDate
+          in: query
+          description: Filter shows that aired on or before this date (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+          example: "2023-12-31"
+        - name: language
+          in: query
+          description: Filter by original language
+          schema:
+            type: string
+          example: "en"
+        - name: country
+          in: query
+          description: Filter by country of origin
+          schema:
+            type: string
+          example: "US"
+        - name: name
+          in: query
+          description: Search by show name or original name (partial match)
+          schema:
+            type: string
+          example: "Breaking"
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Filtered shows
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  filters:
+                    type: object
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShowSummary'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /shows/random:
+    get:
+      tags:
+        - Shows
+      summary: Get random TV shows
+      description: Retrieve a specified number of random TV shows
+      parameters:
+        - name: count
+          in: query
+          description: Number of random shows to return
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          example: 10
+      responses:
+        '200':
+          description: Random shows
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShowSummary'
+
+  /shows/posters:
+    get:
+      tags:
+        - Shows
+      summary: Get poster images
+      description: Retrieve poster URLs for shows, optionally filtered by actor
+      parameters:
+        - name: actor
+          in: query
+          description: Filter posters by actor name
+          schema:
+            type: string
+          example: "Tom Hanks"
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Poster URLs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        show_id:
+                          type: integer
+                        name:
+                          type: string
+                        poster_url:
+                          type: string
+                        backdrop_url:
+                          type: string
+
+  /shows/seasons:
+    get:
+      tags:
+        - Shows
+      summary: Filter shows by number of seasons
+      description: Get shows with a specific range of seasons
+      parameters:
+        - name: min
+          in: query
+          description: Minimum number of seasons
+          schema:
+            type: integer
+            minimum: 1
+          example: 5
+        - name: max
+          in: query
+          description: Maximum number of seasons
+          schema:
+            type: integer
+          example: 10
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Shows matching season criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShowSummary'
+
+  /shows/episodes:
+    get:
+      tags:
+        - Shows
+      summary: Filter shows by number of episodes
+      description: Get shows with a specific range of episodes
+      parameters:
+        - name: min
+          in: query
+          description: Minimum number of episodes
+          schema:
+            type: integer
+            minimum: 1
+          example: 50
+        - name: max
+          in: query
+          description: Maximum number of episodes
+          schema:
+            type: integer
+          example: 200
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Shows matching episode criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShowSummary'
+
+  /shows/longest-running:
+    get:
+      tags:
+        - Shows
+      summary: Get longest running shows
+      description: Retrieve shows with the most seasons or episodes
+      parameters:
+        - name: sortBy
+          in: query
+          description: Sort by seasons or episodes
+          schema:
+            type: string
+            enum: [seasons, episodes]
+            default: seasons
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Longest running shows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShowSummary'
+
+  /shows/top-rated:
+    get:
+      tags:
+        - Shows
+      summary: Get top rated shows
+      description: Retrieve highest rated TV shows
+      parameters:
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Top rated shows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShowSummary'
+
+  /shows/popular:
+    get:
+      tags:
+        - Shows
+      summary: Get popular shows
+      description: Retrieve most popular TV shows based on popularity score
+      parameters:
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Popular shows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShowSummary'
+
+  /shows/upcoming:
+    get:
+      tags:
+        - Shows
+      summary: Get upcoming shows
+      description: Retrieve shows that will air soon or recently premiered
+      parameters:
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Upcoming shows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShowSummary'
+
+  /shows/{id}:
+    get:
+      tags:
+        - Shows
+      summary: Get show by ID
+      description: Retrieve detailed information about a specific TV show
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV show ID
+          schema:
+            type: integer
+          example: 1234
+      responses:
+        '200':
+          description: Show details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShowDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /shows/{id}/summary:
+    get:
+      tags:
+        - Shows
+      summary: Get abridged show summary
+      description: Retrieve a shortened summary of a TV show
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Show summary
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  show_id:
+                    type: integer
+                  name:
+                    type: string
+                  first_air_date:
+                    type: string
+                    format: date
+                  status:
+                    type: string
+                  tmdb_rating:
+                    type: number
+                  overview:
+                    type: string
+                    description: Shortened overview
+
+  /genres:
+    get:
+      tags:
+        - Genres
+      summary: List all genres
+      description: Retrieve a list of all available TV show genres
+      responses:
+        '200':
+          description: List of genres
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        genre_id:
+                          type: integer
+                        name:
+                          type: string
+              example:
+                count: 15
+                data:
+                  - genre_id: 1
+                    name: "Drama"
+                  - genre_id: 2
+                    name: "Comedy"
+
+  /actors:
+    get:
+      tags:
+        - Actors
+      summary: Get all actors
+      description: Retrieve a list of all actors in the database
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: List of actors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  page:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Actor'
+
+  /actors/{name}:
+    get:
+      tags:
+        - Actors
+      summary: Get actor profile
+      description: Retrieve detailed information about an actor
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Actor name
+          schema:
+            type: string
+          example: "Bryan Cranston"
+      responses:
+        '200':
+          description: Actor profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActorDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /actors/{name}/shows:
+    get:
+      tags:
+        - Actors
+      summary: Get shows by actor
+      description: Retrieve all shows featuring a specific actor
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shows featuring the actor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  actor:
+                    type: string
+                  count:
+                    type: integer
+                  shows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        show_id:
+                          type: integer
+                        name:
+                          type: string
+                        character:
+                          type: string
+
+  /actors/{name}/ratings:
+    get:
+      tags:
+        - Actors
+      summary: Get actor's highest rated shows
+      description: Retrieve the highest rated shows featuring an actor
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: count
+          in: query
+          description: Number of shows to return
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+      responses:
+        '200':
+          description: Highest rated shows
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShowSummary'
+
+  /stats/genres:
+    get:
+      tags:
+        - Statistics
+      summary: Show count per genre
+      description: Get statistics on number of shows per genre
+      responses:
+        '200':
+          description: Genre statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    genre:
+                      type: string
+                    show_count:
+                      type: integer
+                    percentage:
+                      type: number
+
+  /stats/networks:
+    get:
+      tags:
+        - Statistics
+      summary: Show count per network
+      description: Get statistics on number of shows per network
+      responses:
+        '200':
+          description: Network statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    network:
+                      type: string
+                    show_count:
+                      type: integer
+
+  /stats/ratings/genre:
+    get:
+      tags:
+        - Statistics
+      summary: Average rating per genre
+      description: Get average TMDb rating for each genre
+      responses:
+        '200':
+          description: Rating statistics by genre
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    genre:
+                      type: string
+                    avg_rating:
+                      type: number
+                    show_count:
+                      type: integer
+
+  /stats/ratings/network:
+    get:
+      tags:
+        - Statistics
+      summary: Average rating per network
+      description: Get average TMDb rating for each network
+      responses:
+        '200':
+          description: Rating statistics by network
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    network:
+                      type: string
+                    avg_rating:
+                      type: number
+                    show_count:
+                      type: integer
+
+  /admin/shows:
+    post:
+      tags:
+        - Admin
+      summary: Add new TV show
+      description: Add a new TV show to the database (requires admin authentication)
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShowCreate'
+      responses:
+        '201':
+          description: Show created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShowDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /admin/shows/{id}:
+    put:
+      tags:
+        - Admin
+      summary: Update show information
+      description: Update an existing TV show (requires admin authentication)
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShowUpdate'
+      responses:
+        '200':
+          description: Show updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShowDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    delete:
+      tags:
+        - Admin
+      summary: Delete a show
+      description: Delete a TV show from the database (requires management-level authentication)
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Show deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /admin/actors:
+    post:
+      tags:
+        - Admin
+      summary: Add new actor
+      description: Add a new actor to the database (requires admin authentication)
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                profile_url:
+                  type: string
+      responses:
+        '201':
+          description: Actor created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Admin API key for authentication
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 50
+        minimum: 1
+        maximum: 100
+
+  schemas:
+    ShowSummary:
+      type: object
+      properties:
+        show_id:
+          type: integer
+          example: 1234
+        name:
+          type: string
+          example: "Breaking Bad"
+        original_name:
+          type: string
+          example: "Breaking Bad"
+        first_air_date:
+          type: string
+          format: date
+          example: "2008-01-20"
+        status:
+          type: string
+          example: "Ended"
+        seasons:
+          type: integer
+          example: 5
+        episodes:
+          type: integer
+          example: 62
+        tmdb_rating:
+          type: number
+          format: float
+          example: 9.5
+        popularity:
+          type: number
+          format: float
+          example: 234.567
+        poster_url:
+          type: string
+          example: "https://image.tmdb.org/poster123.jpg"
+
+    ShowDetail:
+      allOf:
+        - $ref: '#/components/schemas/ShowSummary'
+        - type: object
+          properties:
+            last_air_date:
+              type: string
+              format: date
+              example: "2013-09-29"
+            overview:
+              type: string
+              example: "A high school chemistry teacher turned methamphetamine producer..."
+            vote_count:
+              type: integer
+              example: 15234
+            backdrop_url:
+              type: string
+              example: "https://image.tmdb.org/backdrop123.jpg"
+            genres:
+              type: array
+              items:
+                type: object
+                properties:
+                  genre_id:
+                    type: integer
+                  name:
+                    type: string
+              example:
+                - genre_id: 1
+                  name: "Drama"
+                - genre_id: 5
+                  name: "Crime"
+            creators:
+              type: array
+              items:
+                type: string
+              example: ["Vince Gilligan"]
+            networks:
+              type: array
+              items:
+                type: object
+                properties:
+                  network_id:
+                    type: integer
+                  name:
+                    type: string
+                  logo:
+                    type: string
+                  countries:
+                    type: array
+                    items:
+                      type: string
+            companies:
+              type: array
+              items:
+                type: object
+                properties:
+                  company_id:
+                    type: integer
+                  name:
+                    type: string
+                  logo:
+                    type: string
+                  countries:
+                    type: array
+                    items:
+                      type: string
+            actors:
+              type: array
+              items:
+                type: object
+                properties:
+                  actor_id:
+                    type: integer
+                  name:
+                    type: string
+                  character:
+                    type: string
+                  profile_url:
+                    type: string
+                  order_num:
+                    type: integer
+              example:
+                - actor_id: 17
+                  name: "Bryan Cranston"
+                  character: "Walter White"
+                  profile_url: "https://image.tmdb.org/profile17.jpg"
+                  order_num: 1
+
+    ShowCreate:
+      type: object
+      required:
+        - name
+        - first_air_date
+      properties:
+        name:
+          type: string
+        original_name:
+          type: string
+        first_air_date:
+          type: string
+          format: date
+        last_air_date:
+          type: string
+          format: date
+        seasons:
+          type: integer
+        episodes:
+          type: integer
+        status:
+          type: string
+        overview:
+          type: string
+        poster_url:
+          type: string
+        backdrop_url:
+          type: string
+        genres:
+          type: array
+          items:
+            type: integer
+          description: Array of genre IDs
+        creators:
+          type: array
+          items:
+            type: string
+        networks:
+          type: array
+          items:
+            type: integer
+          description: Array of network IDs
+        companies:
+          type: array
+          items:
+            type: integer
+          description: Array of company IDs
+
+    ShowUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        original_name:
+          type: string
+        first_air_date:
+          type: string
+          format: date
+        last_air_date:
+          type: string
+          format: date
+        seasons:
+          type: integer
+        episodes:
+          type: integer
+        status:
+          type: string
+        overview:
+          type: string
+        poster_url:
+          type: string
+        backdrop_url:
+          type: string
+
+    Actor:
+      type: object
+      properties:
+        actor_id:
+          type: integer
+          example: 17
+        name:
+          type: string
+          example: "Bryan Cranston"
+        profile_url:
+          type: string
+          example: "https://image.tmdb.org/profile17.jpg"
+
+    ActorDetail:
+      allOf:
+        - $ref: '#/components/schemas/Actor'
+        - type: object
+          properties:
+            show_count:
+              type: integer
+              description: Number of shows the actor has appeared in
+            shows:
+              type: array
+              items:
+                type: object
+                properties:
+                  show_id:
+                    type: integer
+                  name:
+                    type: string
+                  character:
+                    type: string
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid query parameters"
+              details:
+                type: string
+    
+    Unauthorized:
+      description: Unauthorized - missing or invalid API key
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized access"
+    
+    Forbidden:
+      description: Forbidden - insufficient permissions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Insufficient permissions for this operation"
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Show not found"
+    
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Internal server error"
