@@ -1,0 +1,142 @@
+openapi: 3.0.0
+info:
+  title: TV Database System API
+  description: |
+    A comprehensive API for retrieving information on thousands of television shows.
+    
+    **Contributors:** Preston Sia, Mathew Belmont, Sean Miller, Abdul Hassan
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@tvdatabase.com
+
+servers:
+  - url: https://api.tvdatabase.com/v1
+    description: Production server
+  - url: https://staging-api.tvdatabase.com/v1
+    description: Staging server
+
+tags:
+  - name: Shows
+    description: TV show information
+  - name: Documentation
+    description: API documentation endpoints
+
+paths:
+  /api-docs:
+    get:
+      tags:
+        - Documentation
+      summary: View API documentation
+      description: Interactive Swagger UI documentation for the TV Database API
+      responses:
+        '200':
+          description: Swagger UI HTML page
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /shows:
+    get:
+      tags:
+        - Shows
+      summary: Get all TV shows
+      description: Retrieve a list of all TV shows in the database with optional pagination
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 1500
+                  page:
+                    type: integer
+                    example: 1
+                  limit:
+                    type: integer
+                    example: 50
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShowSummary'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    
+    LimitParam:
+      name: limit
+      in: query
+      description: Number of results per page
+      schema:
+        type: integer
+        default: 50
+        minimum: 1
+        maximum: 100
+
+  schemas:
+    ShowSummary:
+      type: object
+      properties:
+        show_id:
+          type: integer
+          example: 1234
+        name:
+          type: string
+          example: "Breaking Bad"
+        original_name:
+          type: string
+          example: "Breaking Bad"
+        first_air_date:
+          type: string
+          format: date
+          example: "2008-01-20"
+        status:
+          type: string
+          example: "Ended"
+        seasons:
+          type: integer
+          example: 5
+        episodes:
+          type: integer
+          example: 62
+        tmdb_rating:
+          type: number
+          format: float
+          example: 9.5
+        popularity:
+          type: number
+          format: float
+          example: 234.567
+        poster_url:
+          type: string
+          example: "https://image.tmdb.org/poster123.jpg"
+
+  responses:
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Internal server error"
