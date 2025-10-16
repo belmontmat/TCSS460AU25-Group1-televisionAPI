@@ -4,10 +4,17 @@
  * @author Preston Sia, Mathew Belmont, Sean Miller, Abdul Hassan
  */
 
-
-import express, {Express} from 'express';
 import cors from 'cors';
+import express, {Express} from 'express';
+import { readFileSync } from 'fs';
 import routes from '@/routes/index';
+import swaggerUi from 'swagger-ui-express';
+import { load } from 'js-yaml';
+import path from 'path';
+
+const swaggerDocument = load(
+    readFileSync(path.join(__dirname, '../project_files/swagger_temp.yaml'), 'utf8')
+  ) as swaggerUi.JsonObject;
 
 const createApp = (): Express => {
     const app = express();          // instantiate the express app object
@@ -17,6 +24,7 @@ const createApp = (): Express => {
 
     // Configure base ROUTES
     app.use('/', routes);           // Express router configuration
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     return app;
 };
