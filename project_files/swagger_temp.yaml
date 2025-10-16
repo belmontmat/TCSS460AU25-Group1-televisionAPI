@@ -3,6 +3,8 @@ info:
   title: TV Database System API
   description: |
     A comprehensive API for retrieving information on thousands of television shows.
+    Users can search using various filters including genre, name, actors, ratings, and more.
+    Admin users can add, update, and delete show entries.
     
     **Contributors:** Preston Sia, Mathew Belmont, Sean Miller, Abdul Hassan
   version: 1.0.0
@@ -18,7 +20,7 @@ servers:
 
 tags:
   - name: Shows
-    description: TV show information
+    description: TV show information and filtering
   - name: Documentation
     description: API documentation endpoints
 
@@ -27,8 +29,8 @@ paths:
     get:
       tags:
         - Documentation
-      summary: View API documentation
-      description: Interactive Swagger UI documentation for the TV Database API
+      summary: Get API documentation
+      description: Serves the Swagger/OpenAPI documentation UI
       responses:
         '200':
           description: Swagger UI HTML page
@@ -36,13 +38,15 @@ paths:
             text/html:
               schema:
                 type: string
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /shows:
     get:
       tags:
         - Shows
       summary: Get all TV shows
-      description: Retrieve a list of all TV shows in the database with optional pagination
+      description: Retrieve a list of all TV shows in the database with optional filtering
       parameters:
         - $ref: '#/components/parameters/PageParam'
         - $ref: '#/components/parameters/LimitParam'
@@ -69,6 +73,30 @@ paths:
                       $ref: '#/components/schemas/ShowSummary'
         '500':
           $ref: '#/components/responses/ServerError'
+
+  /shows/{id}:
+    get:
+      tags:
+        - Shows
+      summary: Get show by ID
+      description: Retrieve detailed information about a specific TV show
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TV show ID
+          schema:
+            type: integer
+          example: 1234
+      responses:
+        '200':
+          description: Show details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShowDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 components:
   parameters:
@@ -129,7 +157,107 @@ components:
           type: string
           example: "https://image.tmdb.org/poster123.jpg"
 
+    ShowDetail:
+      allOf:
+        - $ref: '#/components/schemas/ShowSummary'
+        - type: object
+          properties:
+            last_air_date:
+              type: string
+              format: date
+              example: "2013-09-29"
+            overview:
+              type: string
+              example: "A high school chemistry teacher turned methamphetamine producer..."
+            vote_count:
+              type: integer
+              example: 15234
+            backdrop_url:
+              type: string
+              example: "https://image.tmdb.org/backdrop123.jpg"
+            genres:
+              type: array
+              items:
+                type: object
+                properties:
+                  genre_id:
+                    type: integer
+                  name:
+                    type: string
+              example:
+                - genre_id: 1
+                  name: "Drama"
+                - genre_id: 5
+                  name: "Crime"
+            creators:
+              type: array
+              items:
+                type: string
+              example: ["Vince Gilligan"]
+            networks:
+              type: array
+              items:
+                type: object
+                properties:
+                  network_id:
+                    type: integer
+                  name:
+                    type: string
+                  logo:
+                    type: string
+                  countries:
+                    type: array
+                    items:
+                      type: string
+            companies:
+              type: array
+              items:
+                type: object
+                properties:
+                  company_id:
+                    type: integer
+                  name:
+                    type: string
+                  logo:
+                    type: string
+                  countries:
+                    type: array
+                    items:
+                      type: string
+            actors:
+              type: array
+              items:
+                type: object
+                properties:
+                  actor_id:
+                    type: integer
+                  name:
+                    type: string
+                  character:
+                    type: string
+                  profile_url:
+                    type: string
+                  order_num:
+                    type: integer
+              example:
+                - actor_id: 17
+                  name: "Bryan Cranston"
+                  character: "Walter White"
+                  profile_url: "https://image.tmdb.org/profile17.jpg"
+                  order_num: 1
+
   responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Show not found"
+    
     ServerError:
       description: Internal server error
       content:
