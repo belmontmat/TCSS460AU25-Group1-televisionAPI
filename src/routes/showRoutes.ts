@@ -4,12 +4,14 @@
 
 import {Router} from 'express';
 //import { getShowList } from '@/controller/showRoutesController';
+import { MockShowRepo } from '@/controller/showRoutesController';
 
 const showRoutes = Router();
+const showData = new MockShowRepo(); // temporary while the database is still being handled
 
-showRoutes.get('/', (request, response) => {
+showRoutes.get('/', async(request, response) => {
     // Replace this with query and formating of data from db
-    response.json({
+    /* response.json({
         success: true,
         message: 'The show route!',
         version: '0.0.1',
@@ -18,7 +20,16 @@ showRoutes.get('/', (request, response) => {
             
         },
         documentation: 'Not available yet'
-    });
+    }); */
+    try {
+        const page = parseInt(request.query.page as string) || 1;
+        const limit = parseInt(request.query.limit as string) || 50;
+
+        const result = await showData.getShowList(page, limit);
+        response.json(result);
+    } catch (error) {
+        response.status(500).json({error: 'Internal server error: ' + error});
+    }
 });
 
 showRoutes.get('/:id', (request, response) => {
