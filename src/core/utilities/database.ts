@@ -32,12 +32,12 @@ const createDatabaseConfig = (): PoolConfig => {
         port: parseInt(getEnvVar('DB_PORT', '5432')),
         user: getEnvVar('DB_USER', 'postgres'),
         password: getEnvVar('DB_PASSWORD', 'password'),
-        database: getEnvVar('DB_NAME', 'message_db'),
+        database: getEnvVar('DB_NAME', 'tv_db'),
         max: 20,
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 2000,
         ssl: {
-            rejectUnauthorized: true // Set to false for self-signed certificates
+            rejectUnauthorized: false // Set to false for self-signed certificates
             // Optionally specify certificate files:
             // ca: fs.readFileSync('/path/to/server-ca.pem').toString(),
             // key: fs.readFileSync('/path/to/client-key.pem').toString(),
