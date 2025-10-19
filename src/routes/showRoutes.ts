@@ -4,10 +4,10 @@
 
 import {Router} from 'express';
 //import { getShowList } from '@/controller/showRoutesController';
-import { MockShowRepo } from '@/controller/showRoutesController';
+import { ShowRepo } from '@/controller/showRoutesController';
 
 const showRoutes = Router();
-const showData = new MockShowRepo(); // temporary while the database is still being handled
+const showData = new ShowRepo(); // temporary while the database is still being handled
 
 showRoutes.get('/', async(request, response) => {
     // Replace this with query and formating of data from db

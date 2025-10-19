@@ -2,7 +2,8 @@
  * Controller logic for managing TV shows
  */
 
-import { mockShowsData } from './mockShows';
+import { mockShowsData } from '../mockdata/mockShows';
+import { getPool } from '@/core/utilities/database';
 
 export interface ShowSummary {
   show_id: string;
@@ -47,6 +48,44 @@ export interface IShowRepository {
   getShowList(page: number, limit: number): Promise<ShowsResponse>;
 }
 
+export class ShowRepo implements IShowRepository {
+  async getShowList(page: number, limit: number): Promise<ShowsResponse> {
+    const offset = (page - 1) * limit;
+
+    const pool = getPool();
+
+    const countResult = await pool.query('SELECT COUNT(*) FROM tv_show');
+    const totalCount = parseInt(countResult.rows[0].count);
+
+    const result = await pool.query(
+      `SELECT show_id, name, original_name, first_air_date, status,
+        seasons, episodes, tmdb_rating, popularity, poster_url
+        FROM tv_show
+        LIMIT ${limit} OFFSET ${offset}`
+    );
+
+    const summaries: ShowSummary[] = result.rows.map(show => ({
+          show_id: show.show_id,
+          name: show.name,
+          original_name: show.original_name,
+          first_air_date: show.first_air_date,
+          status: show.status,
+          seasons: show.seasons,
+          episodes: show.episodes,
+          tmdb_rating: show.tmdb_rating,
+          popularity: show.popularity,
+          poster_url: show.poster_url
+    }));
+
+    return {
+        count: totalCount,
+        page,
+        limit,
+        data: summaries
+    };
+  }
+}
+
 export class MockShowRepo implements IShowRepository {
     private data: ShowDetail[] = mockShowsData;
 
@@ -77,7 +116,3 @@ export class MockShowRepo implements IShowRepository {
         };
     }
 }
-
-//export const getShowList = async (request: Request, response: Response): Promise<void> => {
-//
-//};

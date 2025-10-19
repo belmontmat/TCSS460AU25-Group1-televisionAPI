@@ -1,4 +1,4 @@
-import { ShowDetail } from './showRoutesController';
+import { ShowDetail } from '../controller/showRoutesController';
 
 export const mockShowsData: ShowDetail[] = [
   {
