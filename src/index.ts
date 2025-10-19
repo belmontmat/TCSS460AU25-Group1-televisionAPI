@@ -5,8 +5,9 @@
  */
 
 import createApp from '@/app';          // Import from app.ts
+import { getEnvVar } from './core/utilities/envConfig';
 
-const PORT = process.env.PORT || 8000;  // FIXME BAD PRACTICE PLEASE FIX
+const PORT = getEnvVar('PORT');
 
 /**
  * START the server
