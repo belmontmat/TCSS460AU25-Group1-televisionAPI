@@ -32,8 +32,9 @@ showRoutes.get('/', async(request, response) => {
     }
 });
 
-showRoutes.get('/:id', (request, response) => {
+showRoutes.get('/:id', async(request, response) => {
     // Replace this with query and formating of data from db
+    /*
     response.json({
         success: true,
         message: 'The show for ID: ' + request.params.id,
@@ -43,7 +44,13 @@ showRoutes.get('/:id', (request, response) => {
             
         },
         documentation: 'Not available yet'
-    });
+    });*/
+    try {
+        const result = await showData.getShowById(parseInt(request.params.id));
+        response.json(result);
+    } catch (error) {
+        response.status(500).json({error: 'Internal server error: ' + error});
+    }
 });
 
 export default showRoutes;
