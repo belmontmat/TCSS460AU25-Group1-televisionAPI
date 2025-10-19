@@ -5,8 +5,10 @@
  */
 
 import createApp from '@/app';          // Import from app.ts
+import { validateEnv } from './core/utilities/envConfig';
+import { connectToDatabase, disconnectFromDatabase } from './core/utilities/database';
 
-const PORT = process.env.PORT || 8000;  // FIXME BAD PRACTICE PLEASE FIX
+const PORT = process.env.PORT || 8000;
 
 /**
  * START the server
@@ -14,6 +16,14 @@ const PORT = process.env.PORT || 8000;  // FIXME BAD PRACTICE PLEASE FIX
  */
 const startServer = async(): Promise<void> => {
     try {
+        // Validate environment
+        validateEnv();
+        console.log('Environment variables validated');
+
+        // Connect to database
+        await connectToDatabase();
+        console.log('Database connection established');
+
         const app = createApp();        // launch the Express app
         const server = app.listen(PORT, () => {
             console.log(`Server running on port ${PORT}`);
@@ -23,11 +33,14 @@ const startServer = async(): Promise<void> => {
         const gracefulShutdown = (sig: string) => {
             console.log(`\n Received ${sig}. Starting graceful shutdown...`);
 
-            server.close((err) => {
+            server.close(async (err) => {
                 if (err) {
                     console.error('Error during server shutdown: ', err);
                     process.exit(1);
                 }
+
+                await disconnectFromDatabase();
+                console.log('Database connection closed');
 
                 console.log('Server closed successfully. Goodbye!');
                 process.exit(0);

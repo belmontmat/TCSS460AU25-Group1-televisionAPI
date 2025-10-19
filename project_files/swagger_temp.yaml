@@ -206,9 +206,7 @@ components:
                   logo:
                     type: string
                   countries:
-                    type: array
-                    items:
-                      type: string
+                    type: string
             companies:
               type: array
               items:
@@ -221,9 +219,7 @@ components:
                   logo:
                     type: string
                   countries:
-                    type: array
-                    items:
-                      type: string
+                    type: string
             actors:
               type: array
               items:
