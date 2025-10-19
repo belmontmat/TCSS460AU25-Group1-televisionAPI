@@ -23,7 +23,7 @@ export interface ShowDetail extends ShowSummary {
   overview: string;
   vote_count: number;
   backdrop_url: string;
-  creators: string;
+  creators: Array<string>;
   genres: Array<{ genre_id: number; name: string }>;
   networks: Array<{ network_id: number; name: string; logo: string; countries: string }>;
   companies: Array<{ company_id: number; name: string; logo: string; countries: string }>;
