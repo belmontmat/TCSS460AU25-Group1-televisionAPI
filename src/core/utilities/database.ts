@@ -35,7 +35,14 @@ const createDatabaseConfig = (): PoolConfig => {
         database: getEnvVar('DB_NAME', 'message_db'),
         max: 20,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 2000
+        connectionTimeoutMillis: 2000,
+        ssl: {
+            rejectUnauthorized: true // Set to false for self-signed certificates
+            // Optionally specify certificate files:
+            // ca: fs.readFileSync('/path/to/server-ca.pem').toString(),
+            // key: fs.readFileSync('/path/to/client-key.pem').toString(),
+            // cert: fs.readFileSync('/path/to/client-cert.pem').toString(),
+        }
     };
 };
 
