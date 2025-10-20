@@ -23,7 +23,7 @@ export interface ShowDetail extends ShowSummary {
   overview: string;
   vote_count: number;
   backdrop_url: string;
-  creators: string;
+  creators: Array<string>;
   genres: Array<{ genre_id: number; name: string }>;
   networks: Array<{ network_id: number; name: string; logo: string; countries: string }>;
   companies: Array<{ company_id: number; name: string; logo: string; countries: string }>;
@@ -151,7 +151,7 @@ export class ShowRepo implements IShowRepository {
       popularity: show.popularity,
       tmdb_rating: show.tmdb_rating,
       vote_count: show.vote_count,
-      creators: show.creators,
+      creators: show.creators.split(';'),
       poster_url: show.poster_url,
       backdrop_url: show.backdrop_url,
       genres: genreResult.rows.map(row => ({

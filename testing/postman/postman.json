@@ -1,0 +1,684 @@
+{
+	"info": {
+		"_postman_id": "1aff651a-414d-48c6-b861-61422221631e",
+		"name": "TV Database System API Tests",
+		"description": "Comprehensive test suite for the TV Database API\n\nContributors: Preston Sia, Mathew Belmont, Sean Miller, Abdul Hassan",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49370156",
+		"_collection_link": "https://smille9-9529240.postman.co/workspace/Sean's-Team's-Workspace~b000e9c6-2261-44cc-8fd9-ad8a75719003/collection/49370156-1aff651a-414d-48c6-b861-61422221631e?action=share&source=collection_link&creator=49370156"
+	},
+	"item": [
+		{
+			"name": "Documentation",
+			"item": [
+				{
+					"name": "Get API Documentation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test content type",
+									"pm.test(\"Content-Type is text/html\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");",
+									"});",
+									"",
+									"// Test response time",
+									"pm.test(\"Response time is less than 2000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"// Test response body contains HTML",
+									"pm.test(\"Response contains HTML content\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"<\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api-docs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api-docs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shows",
+			"item": [
+				{
+					"name": "Get All Shows - Default Pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Parse response",
+									"const jsonData = pm.response.json();",
+									"",
+									"// Test response structure",
+									"pm.test(\"Response has required properties\", function () {",
+									"    pm.expect(jsonData).to.have.property('count');",
+									"    pm.expect(jsonData).to.have.property('page');",
+									"    pm.expect(jsonData).to.have.property('limit');",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"});",
+									"",
+									"// Test data types",
+									"pm.test(\"Properties have correct data types\", function () {",
+									"    pm.expect(jsonData.count).to.be.a('number');",
+									"    pm.expect(jsonData.page).to.be.a('number');",
+									"    pm.expect(jsonData.limit).to.be.a('number');",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});",
+									"",
+									"// Test default pagination values",
+									"pm.test(\"Default pagination values are correct\", function () {",
+									"    pm.expect(jsonData.page).to.equal(1);",
+									"    pm.expect(jsonData.limit).to.equal(50);",
+									"});",
+									"",
+									"// Test data array length",
+									"pm.test(\"Data array length does not exceed limit\", function () {",
+									"    pm.expect(jsonData.data.length).to.be.at.most(jsonData.limit);",
+									"});",
+									"",
+									"// Test individual show structure",
+									"if (jsonData.data.length > 0) {",
+									"    pm.test(\"Show items have required fields\", function () {",
+									"        const show = jsonData.data[0];",
+									"        pm.expect(show).to.have.property('show_id');",
+									"        pm.expect(show).to.have.property('name');",
+									"        pm.expect(show).to.have.property('original_name');",
+									"        pm.expect(show).to.have.property('first_air_date');",
+									"        pm.expect(show).to.have.property('status');",
+									"        pm.expect(show).to.have.property('seasons');",
+									"        pm.expect(show).to.have.property('episodes');",
+									"        pm.expect(show).to.have.property('tmdb_rating');",
+									"        pm.expect(show).to.have.property('popularity');",
+									"        pm.expect(show).to.have.property('poster_url');",
+									"    });",
+									"    ",
+									"    pm.test(\"Show field types are correct\", function () {",
+									"        const show = jsonData.data[0];",
+									"        pm.expect(show.show_id).to.be.a('number');",
+									"        pm.expect(show.name).to.be.a('string');",
+									"        pm.expect(show.seasons).to.be.a('number');",
+									"        pm.expect(show.episodes).to.be.a('number');",
+									"        pm.expect(show.tmdb_rating).to.be.a('number');",
+									"        pm.expect(show.popularity).to.be.a('number');",
+									"    });",
+									"    ",
+									"    // Store first show ID for later tests",
+									"    pm.environment.set(\"test_show_id\", jsonData.data[0].show_id);",
+									"}",
+									"",
+									"// Test response time",
+									"pm.test(\"Response time is less than 3000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Shows - Custom Pagination",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"// Test custom pagination values",
+									"pm.test(\"Pagination reflects query parameters\", function () {",
+									"    pm.expect(jsonData.page).to.equal(2);",
+									"    pm.expect(jsonData.limit).to.equal(20);",
+									"});",
+									"",
+									"// Test data array length matches limit",
+									"pm.test(\"Data array length does not exceed requested limit\", function () {",
+									"    pm.expect(jsonData.data.length).to.be.at.most(20);",
+									"});",
+									"",
+									"// Test that page 2 has different data than page 1",
+									"pm.test(\"Response contains data array\", function () {",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows?page=2&limit=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Shows - Maximum Limit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"// Test maximum limit",
+									"pm.test(\"Maximum limit of 100 is respected\", function () {",
+									"    pm.expect(jsonData.limit).to.be.at.most(100);",
+									"    pm.expect(jsonData.data.length).to.be.at.most(100);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows?limit=100",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Shows - Minimum Page",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"// Test minimum page value",
+									"pm.test(\"Page is at least 1\", function () {",
+									"    pm.expect(jsonData.page).to.be.at.least(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows?page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Show by ID - Valid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"// Test detailed show structure",
+									"pm.test(\"Show detail has all required fields\", function () {",
+									"    // Summary fields",
+									"    pm.expect(jsonData).to.have.property('show_id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('original_name');",
+									"    pm.expect(jsonData).to.have.property('first_air_date');",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"    pm.expect(jsonData).to.have.property('seasons');",
+									"    pm.expect(jsonData).to.have.property('episodes');",
+									"    pm.expect(jsonData).to.have.property('tmdb_rating');",
+									"    pm.expect(jsonData).to.have.property('popularity');",
+									"    pm.expect(jsonData).to.have.property('poster_url');",
+									"    ",
+									"    // Detail-specific fields",
+									"    pm.expect(jsonData).to.have.property('last_air_date');",
+									"    pm.expect(jsonData).to.have.property('overview');",
+									"    pm.expect(jsonData).to.have.property('vote_count');",
+									"    pm.expect(jsonData).to.have.property('backdrop_url');",
+									"    pm.expect(jsonData).to.have.property('genres');",
+									"    pm.expect(jsonData).to.have.property('creators');",
+									"    pm.expect(jsonData).to.have.property('networks');",
+									"    pm.expect(jsonData).to.have.property('companies');",
+									"    pm.expect(jsonData).to.have.property('actors');",
+									"});",
+									"",
+									"// Test field types",
+									"pm.test(\"Show detail fields have correct types\", function () {",
+									"    pm.expect(jsonData.show_id).to.be.a('number');",
+									"    pm.expect(jsonData.name).to.be.a('string');",
+									"    pm.expect(jsonData.overview).to.be.a('string');",
+									"    pm.expect(jsonData.vote_count).to.be.a('number');",
+									"    pm.expect(jsonData.genres).to.be.an('array');",
+									"    pm.expect(jsonData.creators).to.be.an('array');",
+									"    pm.expect(jsonData.networks).to.be.an('array');",
+									"    pm.expect(jsonData.companies).to.be.an('array');",
+									"    pm.expect(jsonData.actors).to.be.an('array');",
+									"});",
+									"",
+									"// Test genres structure",
+									"if (jsonData.genres.length > 0) {",
+									"    pm.test(\"Genre objects have correct structure\", function () {",
+									"        const genre = jsonData.genres[0];",
+									"        pm.expect(genre).to.have.property('genre_id');",
+									"        pm.expect(genre).to.have.property('name');",
+									"        pm.expect(genre.genre_id).to.be.a('number');",
+									"        pm.expect(genre.name).to.be.a('string');",
+									"    });",
+									"}",
+									"",
+									"// Test actors structure",
+									"if (jsonData.actors.length > 0) {",
+									"    pm.test(\"Actor objects have correct structure\", function () {",
+									"        const actor = jsonData.actors[0];",
+									"        pm.expect(actor).to.have.property('actor_id');",
+									"        pm.expect(actor).to.have.property('name');",
+									"        pm.expect(actor).to.have.property('character');",
+									"        pm.expect(actor).to.have.property('profile_url');",
+									"        pm.expect(actor).to.have.property('order_num');",
+									"        pm.expect(actor.actor_id).to.be.a('number');",
+									"        pm.expect(actor.name).to.be.a('string');",
+									"        pm.expect(actor.order_num).to.be.a('number');",
+									"    });",
+									"}",
+									"",
+									"// Test networks structure",
+									"if (jsonData.networks.length > 0) {",
+									"    pm.test(\"Network objects have correct structure\", function () {",
+									"        const network = jsonData.networks[0];",
+									"        pm.expect(network).to.have.property('network_id');",
+									"        pm.expect(network).to.have.property('network_name');",
+									"        pm.expect(network).to.have.property('network_logo');",
+									"        pm.expect(network).to.have.property('network_country');",
+									"    });",
+									"}",
+									"",
+									"// Test rating range",
+									"pm.test(\"TMDB rating is within valid range\", function () {",
+									"    pm.expect(jsonData.tmdb_rating).to.be.at.least(0);",
+									"    pm.expect(jsonData.tmdb_rating).to.be.at.most(10);",
+									"});",
+									"",
+									"// Test positive counts",
+									"pm.test(\"Counts are non-negative\", function () {",
+									"    pm.expect(jsonData.seasons).to.be.at.least(0);",
+									"    pm.expect(jsonData.episodes).to.be.at.least(0);",
+									"    pm.expect(jsonData.vote_count).to.be.at.least(0);",
+									"});",
+									"",
+									"// Test response time",
+									"pm.test(\"Response time is less than 2000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows/{{test_show_id}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows",
+								"{{test_show_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Show by ID - Not Found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test status code",
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"// Test error response structure",
+									"pm.test(\"Error response has error property\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"    pm.expect(jsonData.error).to.be.a('string');",
+									"});",
+									"",
+									"// Test content type",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows/999999999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows",
+								"999999999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Show by ID - Invalid ID Format",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that invalid ID returns error",
+									"pm.test(\"Status code is 400 or 404\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
+									"});",
+									"",
+									"// Test error response",
+									"pm.test(\"Response has error property\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('error');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows/invalid_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows",
+								"invalid_id"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative Tests",
+			"item": [
+				{
+					"name": "Get Shows - Invalid Page (Zero)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Should either reject with error or default to page 1",
+									"pm.test(\"Status code is 200 or 400\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.test(\"Page defaults to minimum value of 1\", function () {",
+									"        pm.expect(jsonData.page).to.be.at.least(1);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows?page=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Shows - Invalid Limit (Exceeds Max)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Should either reject or cap at maximum",
+									"pm.test(\"Status code is 200 or 400\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.test(\"Limit is capped at maximum of 100\", function () {",
+									"        pm.expect(jsonData.limit).to.be.at.most(100);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows?limit=500",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "500"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Shows - Negative Page",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Should reject negative page numbers",
+									"pm.test(\"Status code is 400 or defaults to valid page\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.test(\"Page is positive\", function () {",
+									"        pm.expect(jsonData.page).to.be.at.least(1);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shows?page=-1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "-1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://g1-tvapi.onrender.com",
+			"type": "string"
+		}
+	]
+}

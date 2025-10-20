@@ -3,27 +3,15 @@
  */
 
 import {Router} from 'express';
-//import { getShowList } from '@/controller/showRoutesController';
 import { ShowRepo } from '@/controller/showRoutesController';
 
 const showRoutes = Router();
-const showData = new ShowRepo(); // temporary while the database is still being handled
+const showData = new ShowRepo();
 
 showRoutes.get('/', async(request, response) => {
-    // Replace this with query and formating of data from db
-    /* response.json({
-        success: true,
-        message: 'The show route!',
-        version: '0.0.1',
-        timestamp: new Date().toISOString(),
-        endpoints: {
-            
-        },
-        documentation: 'Not available yet'
-    }); */
     try {
-        const page = parseInt(request.query.page as string) || 1;
-        const limit = parseInt(request.query.limit as string) || 50;
+        const page = Math.max(parseInt(request.query.page as string), 1) || 1;
+        const limit = Math.min(parseInt(request.query.limit as string), 100) || 50;
 
         const result = await showData.getShowList(page, limit);
         response.json(result);
@@ -33,23 +21,28 @@ showRoutes.get('/', async(request, response) => {
 });
 
 showRoutes.get('/:id', async(request, response) => {
-    // Replace this with query and formating of data from db
-    /*
-    response.json({
-        success: true,
-        message: 'The show for ID: ' + request.params.id,
-        version: '0.0.1',
-        timestamp: new Date().toISOString(),
-        endpoints: {
-            
-        },
-        documentation: 'Not available yet'
-    });*/
     try {
+        const idPattern = /^\d+$/;
+        if (!idPattern.test(request.params.id)) {
+            return response.status(400).json({
+                error: 'Invalid ID format. ID must be numeric.'
+            });
+        }
+        
         const result = await showData.getShowById(parseInt(request.params.id));
-        response.json(result);
+        
+        if (result === null) {
+            return response.status(404).json({
+                error: 'No Shows Found with ID: ' + request.params.id
+            });
+        }
+        
+        return response.json(result);
+        
     } catch (error) {
-        response.status(500).json({error: 'Internal server error: ' + error});
+        return response.status(500).json({
+            error: 'Internal server error: ' + error
+        });
     }
 });
 

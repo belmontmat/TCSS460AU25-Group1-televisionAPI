@@ -14,7 +14,7 @@ export const mockShowsData: ShowDetail[] = [
     popularity: 285.3017,
     tmdb_rating: 7.607,
     vote_count: 56,
-    creators: 'Sebastián Ortega',
+    creators: ['Sebastián Ortega'],
     poster_url: 'https://image.tmdb.org/t/p/w500/9JWQYB7FkGtg47wFO7GOrUDgYrx.jpg',
     backdrop_url: 'https://image.tmdb.org/t/p/w500/bxPELhUZNgbFUN31EZTBC99wOHD.jpg',
     genres: [
@@ -73,7 +73,7 @@ export const mockShowsData: ShowDetail[] = [
     popularity: 69.1496,
     tmdb_rating: 7.518,
     vote_count: 57,
-    creators: 'Ken Woodruff; Steph Cha',
+    creators: ['Ken Woodruff; Steph Cha'],
     poster_url: 'https://image.tmdb.org/t/p/w500/8x1W0TR2VIe7ORaRI9zwDqeJn9q.jpg',
     backdrop_url: 'https://image.tmdb.org/t/p/w500/uvSEjgc4vKWefFC6nWBCTQ22UwF.jpg',
     genres: [

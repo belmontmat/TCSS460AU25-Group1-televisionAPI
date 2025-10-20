@@ -97,6 +97,8 @@ paths:
                 $ref: '#/components/schemas/ShowDetail'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
 components:
   parameters:
@@ -193,7 +195,7 @@ components:
               type: array
               items:
                 type: string
-              example: ["Vince Gilligan"]
+              example: ["Vince Gilligan, Icky"]
             networks:
               type: array
               items:
@@ -252,7 +254,7 @@ components:
             properties:
               error:
                 type: string
-                example: "Show not found"
+                example: "No Shows Found with ID: {id}"
     
     ServerError:
       description: Internal server error
@@ -263,4 +265,4 @@ components:
             properties:
               error:
                 type: string
-                example: "Internal server error"
+                example: "Internal server error: {error}"
