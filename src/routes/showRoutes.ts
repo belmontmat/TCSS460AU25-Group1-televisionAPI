@@ -25,14 +25,14 @@ showRoutes.get('/:id', async(request, response) => {
         const idPattern = /^\d+$/; // One or more digits
         if (!idPattern.test(request.params.id)) {
             response.status(400).json({error: 'Invalid ID format. ID must be numeric.'});
-        }
-        const result = await showData.getShowById(parseInt(request.params.id));
-        
-        if (result === null) {
+        } else {
+            const result = await showData.getShowById(parseInt(request.params.id));
+            if (result === null) {
             response.status(404).json({error: 'No Shows Found with ID: ' + request.params.id});
         } else {
             response.json(result);
         }
+        }        
     } catch (error) {
         response.status(500).json({error: 'Internal server error: ' + error});
     }
