@@ -22,9 +22,13 @@ showRoutes.get('/', async(request, response) => {
 
 showRoutes.get('/:id', async(request, response) => {
     try {
-        const result = await showData.getShowById(parseInt(request.params.id));
         const exact = /^\d{6}$/;
-        if (result === null || !exact.test(request.params.id)) {
+        if (!exact.test(request.params.id)) {
+            response.status(404).json({error: 'No Shows Found with ID: ' + request.params.id});
+        }
+        const result = await showData.getShowById(parseInt(request.params.id));
+        
+        if (result === null) {
             response.status(404).json({error: 'No Shows Found with ID: ' + request.params.id});
         } else {
             response.json(result);
