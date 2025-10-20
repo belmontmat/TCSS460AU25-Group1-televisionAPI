@@ -151,7 +151,7 @@ export class ShowRepo implements IShowRepository {
       popularity: show.popularity,
       tmdb_rating: show.tmdb_rating,
       vote_count: show.vote_count,
-      creators: show.creators,
+      creators: show.creators.split(';'),
       poster_url: show.poster_url,
       backdrop_url: show.backdrop_url,
       genres: genreResult.rows.map(row => ({
