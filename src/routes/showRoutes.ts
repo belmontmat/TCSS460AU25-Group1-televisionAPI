@@ -29,9 +29,9 @@ showRoutes.get('/:id', async(request, response) => {
             const result = await showData.getShowById(parseInt(request.params.id));
             if (result === null) {
             response.status(404).json({error: 'No Shows Found with ID: ' + request.params.id});
-        } else {
-            response.json(result);
-        }
+            } else {
+                response.json(result);
+            }
         }        
     } catch (error) {
         response.status(500).json({error: 'Internal server error: ' + error});
