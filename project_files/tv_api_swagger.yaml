@@ -901,21 +901,16 @@ components:
               items:
                 type: string
               example: ["Vince Gilligan"]
-            networks:
-              type: array
-              items:
-                type: object
-                properties:
-                  network_id:
-                    type: integer
-                  name:
-                    type: string
-                  logo:
-                    type: string
-                  countries:
-                    type: array
-                    items:
-                      type: string
+            network:
+              type: object
+              properties:
+                network_id:
+                  type: integer
+                name: 
+                  type: string
+                logo:
+                  type: string
+                country: string
             companies:
               type: array
               items:

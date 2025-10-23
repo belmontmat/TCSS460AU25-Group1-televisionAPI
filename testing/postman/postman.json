@@ -1,11 +1,10 @@
 {
 	"info": {
-		"_postman_id": "1aff651a-414d-48c6-b861-61422221631e",
+		"_postman_id": "98a98e4d-4ecf-43d3-86a1-e284e456e752",
 		"name": "TV Database System API Tests",
 		"description": "Comprehensive test suite for the TV Database API\n\nContributors: Preston Sia, Mathew Belmont, Sean Miller, Abdul Hassan",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "49370156",
-		"_collection_link": "https://smille9-9529240.postman.co/workspace/Sean's-Team's-Workspace~b000e9c6-2261-44cc-8fd9-ad8a75719003/collection/49370156-1aff651a-414d-48c6-b861-61422221631e?action=share&source=collection_link&creator=49370156"
+		"_exporter_id": "21488680"
 	},
 	"item": [
 		{
@@ -346,7 +345,7 @@
 									"    pm.expect(jsonData).to.have.property('backdrop_url');",
 									"    pm.expect(jsonData).to.have.property('genres');",
 									"    pm.expect(jsonData).to.have.property('creators');",
-									"    pm.expect(jsonData).to.have.property('networks');",
+									"    pm.expect(jsonData).to.have.property('network');",
 									"    pm.expect(jsonData).to.have.property('companies');",
 									"    pm.expect(jsonData).to.have.property('actors');",
 									"});",
@@ -359,7 +358,7 @@
 									"    pm.expect(jsonData.vote_count).to.be.a('number');",
 									"    pm.expect(jsonData.genres).to.be.an('array');",
 									"    pm.expect(jsonData.creators).to.be.an('array');",
-									"    pm.expect(jsonData.networks).to.be.an('array');",
+									"    pm.expect(jsonData.network).to.be.an('object');",
 									"    pm.expect(jsonData.companies).to.be.an('array');",
 									"    pm.expect(jsonData.actors).to.be.an('array');",
 									"});",
@@ -391,15 +390,13 @@
 									"}",
 									"",
 									"// Test networks structure",
-									"if (jsonData.networks.length > 0) {",
-									"    pm.test(\"Network objects have correct structure\", function () {",
-									"        const network = jsonData.networks[0];",
-									"        pm.expect(network).to.have.property('network_id');",
-									"        pm.expect(network).to.have.property('network_name');",
-									"        pm.expect(network).to.have.property('network_logo');",
-									"        pm.expect(network).to.have.property('network_country');",
-									"    });",
-									"}",
+									"pm.test(\"Network objects have correct structure\", function () {",
+									"    const network = jsonData.network;",
+									"    pm.expect(network).to.have.property('network_id');",
+									"    pm.expect(network).to.have.property('name');",
+									"    pm.expect(network).to.have.property('logo');",
+									"    pm.expect(network).to.have.property('country');",
+									"});",
 									"",
 									"// Test rating range",
 									"pm.test(\"TMDB rating is within valid range\", function () {",
@@ -674,11 +671,28 @@
 			]
 		}
 	],
-	"variable": [
+	"event": [
 		{
-			"key": "baseUrl",
-			"value": "https://g1-tvapi.onrender.com",
-			"type": "string"
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

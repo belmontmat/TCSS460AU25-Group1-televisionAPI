@@ -4,7 +4,8 @@
 
 import { getPool } from '@/core/utilities/database';
 import { cQueries } from '@/core/utilities/cQueries';
-import { ShowSummary, ShowsResponse, ShowDetail } from '@/types/responseTypes';
+import { ShowSummary, ShowsResponse, ShowDetail, ShowResponse } from '@/types/responseTypes';
+import { convertResponsesToShowDetail } from '@/core/utilities/convert';
 
 
 export const getShowList = async (page: number, limit: number): Promise<ShowsResponse> => {
@@ -58,7 +59,7 @@ export const getShowById = async (id: number): Promise<ShowDetail | null> => {
     return null;
   }
 
-  const show = showResult.rows[0];  // store the show data itself
+  const show: ShowResponse = showResult.rows[0];  // store the show data itself
 
   // Get network
   const networkResult = await pool.query(
@@ -80,39 +81,5 @@ export const getShowById = async (id: number): Promise<ShowDetail | null> => {
     cQueries.getCompanyByFilterQuery(filter, show.show_id)
   );
 
-  return {
-    show_id: show.show_id,
-    name: show.name,
-    original_name: show.original_name,
-    first_air_date: show.first_air_date,
-    last_air_date: show.last_air_date,
-    seasons: show.seasons,
-    episodes: show.episodes,
-    status: show.status,
-    overview: show.overview,
-    popularity: show.popularity,
-    tmdb_rating: show.tmdb_rating,
-    vote_count: show.vote_count,
-    creators: show.creators.split(';'),
-    poster_url: show.poster_url,
-    backdrop_url: show.backdrop_url,
-    genres: genreResult.rows.map(row => ({
-      genre_id: row.genre_id,
-      name: row.name
-    })),
-    networks: networkResult.rows,
-    companies: companyResult.rows.map(row => ({
-      company_id: row.company_id,
-      name: row.name,
-      logo: row.logo,
-      countries: row.countries
-    })),
-    actors: actorsResult.rows.map(row => ({
-      actor_id: row.actor_id,
-      name: row.name,
-      character: row.character,
-      profile_url: row.profile_url,
-      order_num: row.order_num
-    }))
-  };
+  return convertResponsesToShowDetail(showResult, genreResult, networkResult, companyResult, actorsResult);
 };
