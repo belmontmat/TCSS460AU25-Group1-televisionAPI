@@ -17,10 +17,7 @@ export const getShowList = async (page: number, limit: number): Promise<ShowsRes
   const totalCount = parseInt(countResult.rows[0].count);
 
   const result = await pool.query(
-    `SELECT show_id, name, original_name, first_air_date, status,
-      seasons, episodes, tmdb_rating, popularity, poster_url
-      FROM tv_show
-      LIMIT ${limit} OFFSET ${offset}`
+    cQueries.getShows() + ` LIMIT ${limit} OFFSET ${offset}`
   );
 
   const summaries: ShowSummary[] = result.rows.map(show => (convertShowResponsesToShowSummary(show)));

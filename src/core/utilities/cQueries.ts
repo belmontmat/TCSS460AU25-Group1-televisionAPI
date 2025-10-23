@@ -47,4 +47,10 @@ export class cQueries {
     static getShowByIdQuery(id: string | number): string {
         return `SELECT * FROM tv_show WHERE show_id = ${id}`;
     }
+
+    // Will return a query string to get all shows' summary info
+    static getShows(): string {
+        return `SELECT show_id, name, original_name, first_air_date, status, seasons, episodes, tmdb_rating, popularity, poster_url
+      FROM tv_show`;
+    }
 }
