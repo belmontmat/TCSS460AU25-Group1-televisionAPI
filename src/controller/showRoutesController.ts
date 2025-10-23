@@ -4,7 +4,7 @@
 
 import { getPool } from '@/core/utilities/database';
 import { cQueries } from '@/core/utilities/cQueries';
-import { ShowSummary, ShowsResponse, ShowDetail, ShowResponse, NetworkResponse } from '@/types/responseTypes';
+import { ShowSummary, ShowsResponse, ShowDetail, ShowResponse, NetworkResponse, GenreResponse, CompanyResponse, ActorsResponse } from '@/types/responseTypes';
 import { convertResponsesToShowDetail, convertShowResponsesToShowSummary } from '@/core/utilities/convert';
 import { QueryResult } from 'pg';
 
@@ -53,17 +53,17 @@ export const getShowById = async (id: number): Promise<ShowDetail | null> => {
   );
 
   // Get actors
-  const actorsResult = await pool.query(
+  const actorsResult: QueryResult<ActorsResponse> = await pool.query(
     cQueries.getActorsInfoByCharacterQuery(filter, show.show_id)
   );
 
   // Get genres
-  const genreResult = await pool.query(
+  const genreResult: QueryResult<GenreResponse> = await pool.query(
     cQueries.getGenresByFilterQuery(filter, show.show_id)
   );
 
   // Get companies
-  const companyResult = await pool.query(
+  const companyResult: QueryResult<CompanyResponse> = await pool.query(
     cQueries.getCompanyByFilterQuery(filter, show.show_id)
   );
 
