@@ -5,7 +5,7 @@
 import { getPool } from '@/core/utilities/database';
 import { cQueries } from '@/core/utilities/cQueries';
 import { ShowSummary, ShowsResponse, ShowDetail, ShowResponse } from '@/types/responseTypes';
-import { convertResponsesToShowDetail } from '@/core/utilities/convert';
+import { convertResponsesToShowDetail, convertShowResponsesToShowSummary } from '@/core/utilities/convert';
 
 
 export const getShowList = async (page: number, limit: number): Promise<ShowsResponse> => {
@@ -23,19 +23,7 @@ export const getShowList = async (page: number, limit: number): Promise<ShowsRes
       LIMIT ${limit} OFFSET ${offset}`
   );
 
-  const summaries: ShowSummary[] = result.rows.map(show => ({
-        show_id: show.show_id,
-        name: show.name,
-        original_name: show.original_name,
-        first_air_date: show.first_air_date,
-        status: show.status,
-        seasons: show.seasons,
-        episodes: show.episodes,
-        tmdb_rating: show.tmdb_rating,
-        popularity: show.popularity,
-        poster_url: show.poster_url
-  }));
-
+  const summaries: ShowSummary[] = result.rows.map(show => (convertShowResponsesToShowSummary(show))); // THIS IS FAILING
   return {
       count: totalCount,
       page,

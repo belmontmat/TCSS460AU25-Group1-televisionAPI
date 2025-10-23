@@ -1,4 +1,4 @@
-import { ShowDetail, ShowResponse, GenreResponse, NetworkResponse, CompanyResponse, ActorsResponse } from '@/types/responseTypes';
+import { ShowDetail, ShowResponse, GenreResponse, NetworkResponse, CompanyResponse, ActorsResponse, ShowSummary } from '@/types/responseTypes';
 import { QueryResult } from 'pg';
 
 export const convertResponsesToShowDetail = (
@@ -12,7 +12,7 @@ export const convertResponsesToShowDetail = (
     const show = showResult.rows[0];
 
     if (!show || !network) {
-        return null;
+        throw new Error('Show or Network not found in response');
     }
 
     return {
@@ -54,5 +54,21 @@ export const convertResponsesToShowDetail = (
             profile_url: row.profile_url,
             order_num: row.order_num
         }))
+    };
+};
+
+export const convertShowResponsesToShowSummary = (showResult: ShowResponse): ShowSummary => {
+
+    return {
+        show_id: parseInt(showResult.show_id),
+        name: showResult.name,
+        original_name: showResult.original_name,
+        first_air_date: showResult.first_air_date,
+        status: showResult.status,
+        seasons: showResult.seasons,
+        episodes: showResult.episodes,
+        tmdb_rating: showResult.tmdb_rating,
+        popularity: showResult.popularity,
+        poster_url: showResult.poster_url
     };
 };
