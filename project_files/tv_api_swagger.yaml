@@ -207,44 +207,6 @@ paths:
                     items:
                       $ref: '#/components/schemas/ShowSummary'
 
-  /shows/posters:
-    get:
-      tags:
-        - Shows
-      summary: Get poster images
-      description: Retrieve poster URLs for shows, optionally filtered by actor
-      parameters:
-        - name: actor
-          in: query
-          description: Filter posters by actor name
-          schema:
-            type: string
-          example: "Tom Hanks"
-        - $ref: '#/components/parameters/LimitParam'
-      responses:
-        '200':
-          description: Poster URLs
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  count:
-                    type: integer
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        show_id:
-                          type: integer
-                        name:
-                          type: string
-                        poster_url:
-                          type: string
-                        backdrop_url:
-                          type: string
-
   /shows/seasons:
     get:
       tags:
@@ -595,6 +557,44 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ShowSummary'
+  /actors/posters:
+    get:
+      tags:
+        - Actors
+      summary: Get poster images
+      description: Retrieve poster URLs for shows, optionally filtered by actor
+      parameters:
+        - name: actor
+          in: query
+          description: Filter posters by actor name
+          schema:
+            type: string
+          example: "Tom Hanks"
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Poster URLs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        show_id:
+                          type: integer
+                        name:
+                          type: string
+                        poster_url:
+                          type: string
+                        backdrop_url:
+                          type: string
+
 
   /stats/genres:
     get:
