@@ -1,8 +1,8 @@
-import { ShowDetail } from '../controller/showRoutesController';
+import { ShowDetail } from '../types/responseTypes';
 
 export const mockShowsData: ShowDetail[] = [
   {
-    show_id: '258462',
+    show_id: 258462,
     name: 'In the Mud',
     original_name: 'En el barro',
     first_air_date: '2025-08-14',
@@ -21,14 +21,13 @@ export const mockShowsData: ShowDetail[] = [
       { genre_id: 1, name: 'Crime' },
       { genre_id: 2, name: 'Drama' }
     ],
-    networks: [
+    network:
       {
         network_id: 1,
         name: 'Netflix',
         logo: 'https://image.tmdb.org/t/p/w500/wwemzKWzjKYJFfCeiB57q3r4Bcm.png',
-        countries: ''
-      }
-    ],
+        country: ''
+      },
     companies: [
       {
         company_id: 1,
@@ -61,7 +60,7 @@ export const mockShowsData: ShowDetail[] = [
     ]
   },
   {
-    show_id: '227114',
+    show_id: 227114,
     name: 'Butterfly',
     original_name: 'Butterfly',
     first_air_date: '2025-08-13',
@@ -80,14 +79,13 @@ export const mockShowsData: ShowDetail[] = [
       { genre_id: 3, name: 'Action & Adventure' },
       { genre_id: 2, name: 'Drama' }
     ],
-    networks: [
+    network:
       {
         network_id: 2,
         name: 'Prime Video',
         logo: 'https://image.tmdb.org/t/p/w500/w7HfLNm9CWwRmAMU58udl2L7We7.png',
-        countries: ''
-      }
-    ],
+        country: ''
+      },
     companies: [
       {
         company_id: 3,

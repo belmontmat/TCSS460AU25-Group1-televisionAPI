@@ -4,8 +4,9 @@
 
 import { getPool } from '@/core/utilities/database';
 import { cQueries } from '@/core/utilities/cQueries';
-import { ShowSummary, ShowsResponse, ShowDetail, ShowResponse } from '@/types/responseTypes';
+import { ShowSummary, ShowsResponse, ShowDetail, ShowResponse, NetworkResponse } from '@/types/responseTypes';
 import { convertResponsesToShowDetail, convertShowResponsesToShowSummary } from '@/core/utilities/convert';
+import { QueryResult } from 'pg';
 
 
 export const getShowList = async (page: number, limit: number): Promise<ShowsResponse> => {
@@ -47,7 +48,7 @@ export const getShowById = async (id: number): Promise<ShowDetail | null> => {
   const show: ShowResponse = showResult.rows[0];  // store the show data itself
 
   // Get network
-  const networkResult = await pool.query(
+  const networkResult: QueryResult<NetworkResponse> = await pool.query(
     cQueries.getNetworkInfoByFilterQuery(filter, show.show_id)
   );
 

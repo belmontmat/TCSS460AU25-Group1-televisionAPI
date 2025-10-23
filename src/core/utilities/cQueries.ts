@@ -14,7 +14,7 @@ export class cQueries {
 
     // Will return a query string to get actors info based on character filters
     // Ex. filter could be a character db key like 'name' and value could be 'Walter White'
-    //      or 
+    //      or 'show_id' and value could be '111111'
     static getActorsInfoByCharacterQuery(filter: string, value: string | number): string {
         return `SELECT a.actor_id, a.name, a.profile_url, c.name as character, c.order_num
       FROM actors a
