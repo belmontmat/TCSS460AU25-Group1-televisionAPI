@@ -23,7 +23,7 @@ export const getShowList = async (page: number, limit: number): Promise<ShowsRes
       LIMIT ${limit} OFFSET ${offset}`
   );
 
-  const summaries: ShowSummary[] = result.rows.map(show => (convertShowResponsesToShowSummary(show))); // THIS IS FAILING
+  const summaries: ShowSummary[] = result.rows.map(show => (convertShowResponsesToShowSummary(show)));
   return {
       count: totalCount,
       page,

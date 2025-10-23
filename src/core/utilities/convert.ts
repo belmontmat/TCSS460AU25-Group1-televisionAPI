@@ -58,7 +58,6 @@ export const convertResponsesToShowDetail = (
 };
 
 export const convertShowResponsesToShowSummary = (showResult: ShowResponse): ShowSummary => {
-
     return {
         show_id: parseInt(showResult.show_id),
         name: showResult.name,
@@ -70,5 +69,20 @@ export const convertShowResponsesToShowSummary = (showResult: ShowResponse): Sho
         tmdb_rating: showResult.tmdb_rating,
         popularity: showResult.popularity,
         poster_url: showResult.poster_url
+    };
+};
+
+export const convertShowDetailsToShowSummary = (show: ShowDetail): ShowSummary => {
+    return {
+        show_id: show.show_id,
+        name: show.name,
+        original_name: show.original_name,
+        first_air_date: show.first_air_date,
+        status: show.status,
+        seasons: show.seasons,
+        episodes: show.episodes,
+        tmdb_rating: show.tmdb_rating,
+        popularity: show.popularity,
+        poster_url: show.poster_url
     };
 };
