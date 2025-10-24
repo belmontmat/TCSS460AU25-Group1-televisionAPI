@@ -69,3 +69,56 @@ export const getShowById = async (id: number): Promise<ShowDetail | null> => {
 
   return convertResponsesToShowDetail(showResult, genreResult, networkResult, companyResult, actorsResult);
 };
+
+export const getRandomShows = async (count: number): Promise<ShowSummary[]> => {
+  const pool = getPool();
+
+  const result = await pool.query(cQueries.getRandomShowsQuery(count)
+    
+  );
+
+  const summaries: ShowSummary[] = result.rows.map(show => (convertShowResponsesToShowSummary(show)));
+  return summaries;
+};
+
+export const getLongestRunning = async (limit: number): Promise<ShowSummary[]> => {
+  const pool = getPool();
+
+  const result = await pool.query(
+    `SELECT show_id, name, original_name, first_air_date, status, seasons, episodes, tmdb_rating, popularity, poster_url, last_air_date
+     FROM tv_show
+     ORDER BY AGE(last_air_date, first_air_date) DESC
+     LIMIT ${limit}`
+  );
+
+  const summaries: ShowSummary[] = result.rows.map(show => (convertShowResponsesToShowSummary(show)));
+  return summaries;
+};
+
+export const getPopular = async (limit: number): Promise<ShowSummary[]> => {
+  const pool = getPool();
+
+  const result = await pool.query(
+    `SELECT show_id, name, original_name, first_air_date, status, seasons, episodes, tmdb_rating, popularity, poster_url, last_air_date
+     FROM tv_show
+     ORDER BY popularity DESC
+     LIMIT ${limit}`
+  );
+
+  const summaries: ShowSummary[] = result.rows.map(show => (convertShowResponsesToShowSummary(show)));
+  return summaries;
+};
+
+export const getTopRated = async (limit: number): Promise<ShowSummary[]> => {
+  const pool = getPool();
+
+  const result = await pool.query(
+    `SELECT show_id, name, original_name, first_air_date, status, seasons, episodes, tmdb_rating, popularity, poster_url, last_air_date
+     FROM tv_show
+     ORDER BY tmdb_rating DESC
+     LIMIT ${limit}`
+  );
+
+  const summaries: ShowSummary[] = result.rows.map(show => (convertShowResponsesToShowSummary(show)));
+  return summaries;
+};

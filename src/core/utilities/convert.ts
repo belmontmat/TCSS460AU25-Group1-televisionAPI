@@ -72,7 +72,10 @@ export const convertShowResponsesToShowSummary = (showResult: ShowResponse): Sho
     };
 };
 
-export const convertShowDetailsToShowSummary = (show: ShowDetail): ShowSummary => {
+export const convertShowDetailsToShowSummary = (show: ShowDetail | null): ShowSummary => {
+    if (show === null) {
+        throw new Error('ShowDetail is null');
+    }
     return {
         show_id: show.show_id,
         name: show.name,

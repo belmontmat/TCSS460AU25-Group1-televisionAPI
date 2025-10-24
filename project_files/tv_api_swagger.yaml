@@ -182,16 +182,7 @@ paths:
       summary: Get random TV shows
       description: Retrieve a specified number of random TV shows
       parameters:
-        - name: count
-          in: query
-          description: Number of random shows to return
-          required: false
-          schema:
-            type: integer
-            default: 10
-            minimum: 1
-            maximum: 100
-          example: 10
+        - $ref: '#/components/parameters/LimitParam'
       responses:
         '200':
           description: Random shows
@@ -276,15 +267,8 @@ paths:
       tags:
         - Shows
       summary: Get longest running shows
-      description: Retrieve shows with the most seasons or episodes
+      description: Retrieve shows with greatest difference between first and last air dates
       parameters:
-        - name: sortBy
-          in: query
-          description: Sort by seasons or episodes
-          schema:
-            type: string
-            enum: [seasons, episodes]
-            default: seasons
         - $ref: '#/components/parameters/LimitParam'
       responses:
         '200':
@@ -325,24 +309,6 @@ paths:
       responses:
         '200':
           description: Popular shows
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ShowSummary'
-
-  /shows/upcoming:
-    get:
-      tags:
-        - Shows
-      summary: Get upcoming shows
-      description: Retrieve shows that will air soon or recently premiered
-      parameters:
-        - $ref: '#/components/parameters/LimitParam'
-      responses:
-        '200':
-          description: Upcoming shows
           content:
             application/json:
               schema:

@@ -53,4 +53,11 @@ export class cQueries {
         return `SELECT show_id, name, original_name, first_air_date, status, seasons, episodes, tmdb_rating, popularity, poster_url
       FROM tv_show`;
     }
+
+    static getRandomShowsQuery(count: number): string {
+        return `SELECT show_id, name, original_name, first_air_date, status, seasons, episodes, tmdb_rating, popularity, poster_url
+      FROM tv_show
+      ORDER BY RANDOM()
+      LIMIT ${count}`;
+    }
 }
