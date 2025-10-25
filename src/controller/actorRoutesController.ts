@@ -4,33 +4,76 @@ import { QueryResult } from 'pg';
 import { ActorsSummary } from '@/types/responseTypes';
 import { convertActorsSummary } from '@/core/utilities/convertActors';
 
-export const getAllActors = async (request: Request, response: Response) => {
+// GET ACTORS
+
+export const getActors = async (request: Request, response: Response) => {
     try {
-        const page = Math.max(parseInt(request.query.page as string), 1) || 1;
-        const limit = Math.min(parseInt(request.query.limit as string), 100) || 50;
-        const offset = (page - 1) * limit;
+        // get page and limit parameters
+        const { page, limit, offset } = getPaginationParams(request);
+        const nameQuery = request.query.name as string | undefined;
 
         const pool = getPool();
 
-        const countResult = await pool.query('SELECT COUNT(*) FROM actors');
-        const totalCount = parseInt(countResult.rows[0].count);
+        // Query strings to use
+        const countQuery: string = 'SELECT COUNT(*) FROM actors';
+        const countQueryWithName: string = 'SELECT COUNT(*) FROM actors WHERE name ILIKE $1';
+        const dataQuery: string = 'SELECT * FROM actors LIMIT $1 OFFSET $2';
+        const dataQueryWithName: string = 'SELECT * FROM actors WHERE name ILIKE $1 LIMIT $2 OFFSET $3';
 
-        const result: QueryResult<ActorsSummary> = await pool.query(
-            'SELECT * FROM actors LIMIT $1 OFFSET $2',
-            [limit, offset]
-        );
+        // Check if a name filter is present in the request
+        // (validation checks already performed in prior middleware)
+        const hasNameFilter = nameQuery && nameQuery.trim() !== '';
 
-        const summaries: ActorsSummary[] = convertActorsSummary(result);
+        if (hasNameFilter) {
+            const searchPattern = `%${nameQuery.trim()}%`;
+            const countResult = await pool.query(countQueryWithName, [searchPattern]);
+            const totalCount = parseInt(countResult.rows[0].count);
 
-        response.json({
-            count: totalCount,
-            page: page,
-            data: summaries
-        });
+            const result: QueryResult<ActorsSummary> = await pool.query(
+                dataQueryWithName,
+                [searchPattern, limit, offset]
+            );
+
+            const summaries: ActorsSummary[] = convertActorsSummary(result);
+
+            response.json({
+                count: totalCount,
+                page: page,
+                data: summaries
+            });
+        } else {
+            const countResult = await pool.query(countQuery);
+            const totalCount = parseInt(countResult.rows[0].count);
+
+            const result: QueryResult<ActorsSummary> = await pool.query(
+                dataQuery,
+                [limit, offset]
+            );
+
+            const summaries: ActorsSummary[] = convertActorsSummary(result);
+
+            response.json({
+                count: totalCount,
+                page: page,
+                data: summaries
+            });
+        }
     } catch (error) {
         response.status(500).json({error: 'Internal server error' + error});
     }
 };
+
+// Helpers for getActors
+const getPaginationParams = (request: Request) => {
+    const page = Math.max(parseInt(request.query.page as string), 1) || 1;
+    const limit = Math.min(parseInt(request.query.limit as string), 100) || 50;
+    const offset = (page - 1) * limit;
+    
+    return { page, limit, offset };
+};
+
+
+// GET BY ID
 
 export const getActorById = async(request: Request, response: Response) => {
     try {
@@ -56,9 +99,9 @@ export const getActorById = async(request: Request, response: Response) => {
             } else {
                 const summaries: ActorsSummary[] = convertActorsSummary(result);
 
-                response.json({
-                    summaries
-                });
+                response.json(
+                    summaries[0]
+                );
             }
         }
 
