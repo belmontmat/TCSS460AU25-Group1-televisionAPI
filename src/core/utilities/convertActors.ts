@@ -1,6 +1,6 @@
 // Conversion utilities for actor data
 
-import { ActorsSummary, ActorShowDetails, ActorsResponse } from '@/types/responseTypes';
+import { ActorsSummary, ActorShow } from '@/types/responseTypes';
 import { QueryResult } from 'pg';
 
 /**
@@ -17,5 +17,13 @@ export const convertActorsSummary = (results: QueryResult<ActorsSummary>): Actor
         actor_id: actor.actor_id,
         name: actor.name,
         profile_url: actor.profile_url
+    }));
+};
+
+export const convertActorShows = (results: QueryResult): ActorShow[] => {
+    return results.rows.map(row => ({
+        show_id: row.show_id,
+        name: row.name,
+        character: row.character_name
     }));
 };
