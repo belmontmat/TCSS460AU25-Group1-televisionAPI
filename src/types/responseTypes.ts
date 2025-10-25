@@ -86,14 +86,16 @@ export interface ActorsResponse extends ActorsSummary {
   order_num: number;
 }
 
-/** Actor details used for getting actor info by ID */
-export interface ActorShowDetails extends ActorsSummary {
-  show_count: number;
-  shows: [
-    {
-      show_id: number;
-      name: string;
-      character: string;
-    }
-  ]
+/** Actor show details used for getting actor info by ID */
+export interface ActorShow {
+  show_id: number;
+  name: string;
+  character: string;
 }
+
+export interface ActorShowEndpointReponse {
+  actor: string;
+  count: number;
+  shows: ActorShow[];
+}
+

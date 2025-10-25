@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { getPool } from '@/core/utilities/database';
 import { QueryResult } from 'pg';
-import { ActorsSummary } from '@/types/responseTypes';
-import { convertActorsSummary } from '@/core/utilities/convertActors';
+import { ActorShow, ActorShowEndpointReponse, ActorsSummary } from '@/types/responseTypes';
+import { convertActorShows, convertActorsSummary } from '@/core/utilities/convertActors';
 
 // GET ACTORS
 
@@ -11,7 +11,6 @@ export const getActors = async (request: Request, response: Response) => {
         // get page and limit parameters
         const { page, limit, offset } = getPaginationParams(request);
         const nameQuery = request.query.name as string | undefined;
-
         const pool = getPool();
 
         // Query strings to use
@@ -77,34 +76,71 @@ const getPaginationParams = (request: Request) => {
 
 export const getActorById = async(request: Request, response: Response) => {
     try {
-        const idPattern = /^\d+$/;
-        // check for bad params
-        if (!request.params.id || !idPattern.test(request.params.id)) {
-            response.status(400).json({
-                error: 'Invalid ID format.',
-                details: 'ID must be numeric and not empty.'
+        const pool = getPool();
+        const actorId = parseInt(request.params.id as string);
+        const result: QueryResult<ActorsSummary> = await pool.query(
+            'SELECT actor_id, name, profile_url FROM actors WHERE actor_id=$1',
+            [actorId]
+        );
+
+        if (result.rows.length === 0) {
+            response.status(404).json({
+                error: 'Actor not found.'
             });
         } else {
+            const summaries: ActorsSummary[] = convertActorsSummary(result);
 
-            const pool = getPool();
-            const result: QueryResult<ActorsSummary> = await pool.query(
-                'SELECT actor_id, name, profile_url FROM actors WHERE actor_id=$1',
-                [request.params.id]
+            response.json(
+                summaries[0]
             );
-
-            if (result.rows.length === 0) {
-                response.status(404).json({
-                    error: 'Actor not found.'
-                });
-            } else {
-                const summaries: ActorsSummary[] = convertActorsSummary(result);
-
-                response.json(
-                    summaries[0]
-                );
-            }
         }
 
+    } catch (error) {
+        response.status(500).json({error: 'Internal server error' + error});
+    }
+};
+
+
+// GET ACTOR SHOWS
+
+export const getActorShowsById = async(request: Request, response: Response) => {
+    // (1) Get actor information
+    // (2) get character and show information
+
+    try {
+        const actorId = parseInt(request.params.id as string);
+        
+        const pool = getPool();
+
+        // (1) Get actor information
+        const result = await pool.query(
+            'SELECT actor_id, name, profile_url FROM actors WHERE actor_id = $1',
+            [actorId]
+        );
+
+        if (result.rows.length === 0) {
+            response.status(404).json({
+                error: 'Actor not found.'
+            });
+            return;
+        }
+
+        const actor = result.rows[0]; // store the actor's information
+
+        // (2) get character and show information
+        const showsResult = await pool.query(
+            'SELECT ts.show_id, ts.name, c.name as character_name FROM tv_show ts INNER JOIN characters c ON ts.show_id = c.show_id WHERE c.actor_id = $1 ORDER BY ts.name', [actorId]
+        );
+
+        const showData: ActorShow[] = convertActorShows(showsResult);
+
+        const responseData: ActorShowEndpointReponse = {
+            actor: actor.name,
+            count: showData.length,
+            shows: showData
+        };
+
+        response.json(responseData);
 
     } catch (error) {
         response.status(500).json({error: 'Internal server error' + error});
