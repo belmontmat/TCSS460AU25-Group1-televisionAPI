@@ -38,4 +38,6 @@ routes.use('/api-key', apiKeyRoutes);
 
 routes.use('/admin', protectedRoutes);
 
+routes.use('/actors', actorRoutes);
+
 export default routes;
