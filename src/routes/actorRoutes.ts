@@ -3,7 +3,7 @@
  */
 
 import {Router} from 'express';
-import { getAllActors } from '@/controller/actorRoutesController';
+import { getAllActors, getActorById } from '@/controller/actorRoutesController';
 
 const actorRoutes = Router();
 
@@ -14,8 +14,8 @@ const actorRoutes = Router();
 actorRoutes.get('/', getAllActors);
 
 /**
- * Get detailed information about an actor
+ * Get detailed information about an actor by id
  */
-actorRoutes.get('/:name');
+actorRoutes.get('/:id', getActorById);
 
 export default actorRoutes;
