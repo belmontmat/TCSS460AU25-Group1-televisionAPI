@@ -4,6 +4,7 @@
 
 import {Router} from 'express';
 import showRoutes from './showRoutes';
+import genreRoutes from './genreRoutes';
 
 const routes = Router();            // instantiate Router object for export/use
 
@@ -21,5 +22,6 @@ routes.get('/', (request, response) => {
 });
 
 routes.use('/shows', showRoutes);
+routes.use('/genres', genreRoutes);
 
 export default routes;
