@@ -94,10 +94,13 @@ export interface CompanyResponse {
   countries: string;
 }
 
-export interface ActorsResponse {
+export interface ActorsSummary {
   actor_id: number;
   name: string;
   profile_url: string;
+}
+
+export interface ActorsResponse extends ActorsSummary {
   character: string;
   order_num: number;
 }
