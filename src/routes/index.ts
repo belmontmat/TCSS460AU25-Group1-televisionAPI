@@ -28,21 +28,8 @@ routes.get('/', (request, response) => {
 routes.use('/shows', showRoutes);
 routes.use('/genres', genreRoutes);
 routes.use('/stats', statsRoutes);
-
-routes.use('/admin', protectedRoutes);
-
-routes.use('/actors', actorRoutes);
-
 routes.use('/api-key', apiKeyRoutes);
-
-
 routes.use('/admin', protectedRoutes);
-
-routes.use('/actors', actorRoutes);
-routes.use('/stats', statsRoutes);
-
-routes.use('/admin', protectedRoutes);
-
 routes.use('/actors', actorRoutes);
 
 export default routes;
