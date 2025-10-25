@@ -71,13 +71,13 @@ paths:
       summary: Filter TV shows
       description: Search and filter TV shows using multiple criteria
       parameters:
-        - name: actor
+        - name: actors
           in: query
           description: Filter by actor name (comma-separated for multiple)
           schema:
             type: string
           example: "Tom Hanks,Bryan Cranston"
-        - name: genre
+        - name: genres
           in: query
           description: Filter by genre (comma-separated for multiple)
           schema:
@@ -102,7 +102,7 @@ paths:
             type: string
             enum: [active, canceled, ended]
           example: "active"
-        - name: rating
+        - name: min_rating
           in: query
           description: Minimum TMDb rating (0-10)
           schema:
@@ -110,18 +110,6 @@ paths:
             minimum: 0
             maximum: 10
           example: 8.0
-        - name: year
-          in: query
-          description: Filter by first air date year
-          schema:
-            type: integer
-          example: 2020
-        - name: decade
-          in: query
-          description: Filter by decade (e.g., 1990, 2000, 2010)
-          schema:
-            type: integer
-          example: 2010
         - name: startDate
           in: query
           description: Filter shows that aired on or after this date (YYYY-MM-DD)
@@ -136,18 +124,18 @@ paths:
             type: string
             format: date
           example: "2023-12-31"
-        - name: language
-          in: query
-          description: Filter by original language
-          schema:
-            type: string
-          example: "en"
         - name: country
           in: query
           description: Filter by country of origin
           schema:
             type: string
           example: "US"
+        - name: creators
+          in: query
+          description: Filter by creator name (comma-separated for multiple)
+          schema:
+            type: string
+          example: "Ken Woodruff,Steph Cha"
         - name: name
           in: query
           description: Search by show name or original name (partial match)
@@ -165,6 +153,10 @@ paths:
                 type: object
                 properties:
                   count:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
                     type: integer
                   filters:
                     type: object
@@ -186,75 +178,6 @@ paths:
       responses:
         '200':
           description: Random shows
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  count:
-                    type: integer
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ShowSummary'
-
-  /shows/seasons:
-    get:
-      tags:
-        - Shows
-      summary: Filter shows by number of seasons
-      description: Get shows with a specific range of seasons
-      parameters:
-        - name: min
-          in: query
-          description: Minimum number of seasons
-          schema:
-            type: integer
-            minimum: 1
-          example: 5
-        - name: max
-          in: query
-          description: Maximum number of seasons
-          schema:
-            type: integer
-          example: 10
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
-      responses:
-        '200':
-          description: Shows matching season criteria
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ShowSummary'
-
-  /shows/episodes:
-    get:
-      tags:
-        - Shows
-      summary: Filter shows by number of episodes
-      description: Get shows with a specific range of episodes
-      parameters:
-        - name: min
-          in: query
-          description: Minimum number of episodes
-          schema:
-            type: integer
-            minimum: 1
-          example: 50
-        - name: max
-          in: query
-          description: Maximum number of episodes
-          schema:
-            type: integer
-          example: 200
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/LimitParam'
-      responses:
-        '200':
-          description: Shows matching episode criteria
           content:
             application/json:
               schema:
@@ -876,7 +799,8 @@ components:
                   type: string
                 logo:
                   type: string
-                country: string
+                country:
+                  type: string
             companies:
               type: array
               items:

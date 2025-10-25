@@ -2,7 +2,7 @@
  * Routes for TV show listings
  */
 
-import { getShowById, getShowList , getRandomShows, getLongestRunning, getPopular, getTopRated} from '@/controller/showRoutesController';
+import { getShowById, getShowList , getRandomShows, getLongestRunning, getPopular, getTopRated, getShowByFilter} from '@/controller/showRoutesController';
 import { convertShowDetailsToShowSummary } from '@/core/utilities/convert';
 import {Router} from 'express';
 
@@ -14,9 +14,34 @@ showRoutes.get('/', async(request, response) => {
         const limit = Math.min(parseInt(request.query.limit as string), 100) || 50;
 
         const result = await getShowList(page, limit);
-        response.json(result);
+        return response.json(result);
     } catch (error) {
-        response.status(500).json({error: 'Internal server error: ' + error});
+        return response.status(500).json({error: 'Internal server error: ' + error});
+    }
+});
+
+showRoutes.get('/filter', async(request, response) => {
+    try {
+        const actors = request.query.actors?.toString() || ''; // a comma-separated list of actor names
+        const genres = request.query.genres?.toString() || ''; // a comma-separated list of genre names
+        const network = request.query.network?.toString() || '';
+        const studios = request.query.studios?.toString() || ''; // a comma-separated list of studio names
+        const status = request.query.status?.toString() || '';
+        const minRating = parseFloat(request.query.minRating as string) || 0;
+        const maxRating = parseFloat(request.query.maxRating as string) || 10;
+        const startDate = request.query.startDate?.toString() || '1900-01-01';
+        const endDate = (request.query.endDate?.toString() ?? new Date().toISOString().split('T')[0]) as string;
+        const country = request.query.country?.toString() || '';
+        const creators = request.query.creators?.toString() || ''; // a comma-separated list of creator names
+        const name = request.query.name?.toString() || ''; // this should work for original_name and name
+
+        const page = Math.max(parseInt(request.query.page as string), 1) || 1;
+        const limit = Math.min(parseInt(request.query.limit as string), 100) || 50;
+
+        const result = await getShowByFilter(actors, genres, network, studios, status, minRating, maxRating, startDate, endDate, country, creators, name, page, limit);
+        return response.json(result);
+    } catch (error) {
+        return response.status(500).json({error: 'Internal server error: ' + error});
     }
 });
 
