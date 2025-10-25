@@ -80,3 +80,9 @@ export interface ActorsResponse {
   character: string;
   order_num: number;
 }
+
+export interface GenreCountResponse {
+  genre_id: number;
+  name: string;
+  show_count: number;
+}

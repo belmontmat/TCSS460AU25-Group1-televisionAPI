@@ -578,12 +578,12 @@ paths:
                 items:
                   type: object
                   properties:
+                    genre_id:
+                      type: integer
                     genre:
                       type: string
                     show_count:
                       type: integer
-                    percentage:
-                      type: number
 
   /stats/networks:
     get:
