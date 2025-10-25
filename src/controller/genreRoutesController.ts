@@ -3,9 +3,9 @@
  */
 
 import { getPool } from '@/core/utilities/database';
-import { GenreResponse } from '@/types/responseTypes';
+import { GenreCountResponse } from '@/types/responseTypes';
 
-export const getGenreList = async (): Promise<GenreResponse[]> => {
+export const getGenreList = async (): Promise<GenreCountResponse[]> => {
 
   const pool = getPool();
 
@@ -13,9 +13,11 @@ export const getGenreList = async (): Promise<GenreResponse[]> => {
     'SELECT genre_id, name FROM genres ORDER BY genre_id ASC'
   );
 
-  const genres: GenreResponse[] = result.rows.map(genre => ({
+  const genres: GenreCountResponse[] = result.rows.map(genre => ({
     genre_id: parseInt(genre.genre_id),
-    name: genre.name
+    name: genre.name,
+    show_count: parseInt(genre.count),
+    percentage: (parseInt(genre.percentage))
   }));
   
   return genres;
