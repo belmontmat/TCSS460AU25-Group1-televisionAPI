@@ -73,13 +73,27 @@ export interface CompanyResponse {
   countries: string;
 }
 
+/** Base information for actors */
 export interface ActorsSummary {
   actor_id: number;
   name: string;
   profile_url: string;
 }
 
+/** Actor response details used in show summaries */
 export interface ActorsResponse extends ActorsSummary {
   character: string;
   order_num: number;
+}
+
+/** Actor details used for getting actor info by ID */
+export interface ActorShowDetails extends ActorsSummary {
+  show_count: number;
+  shows: [
+    {
+      show_id: number;
+      name: string;
+      character: string;
+    }
+  ]
 }
