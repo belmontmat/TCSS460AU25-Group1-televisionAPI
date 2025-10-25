@@ -9,8 +9,6 @@ import actorRoutes from './actorRoutes';
 import genreRoutes from './genreRoutes';
 import { apiKeyRoutes } from './apiKeyRoutes';
 import statsRoutes from './statsRoutes';
-import protectedRoutes from './protected';
-import actorRoutes from './actorRoutes';
 
 const routes = Router();            // instantiate Router object for export/use
 
