@@ -1,7 +1,11 @@
 /**
  * Routes for getting quick aggrigations and stats
  */
+<<<<<<< HEAD
 import { getActorStats, getCompanyStats, getCountryStats, getGenreStats, getNetworkStats, getStatusStats, getYearStats } from '@/controller/statsRoutesController';
+=======
+import { getGenreStats, getNetworkStats } from '@/controller/statsRoutesController';
+>>>>>>> 12319ac (updated functionality for stats to reduce route numbers)
 import { Router } from 'express';
 
 const statsRoutes = Router();
