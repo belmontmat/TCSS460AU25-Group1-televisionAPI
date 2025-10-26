@@ -19,12 +19,17 @@ servers:
     description: Staging server
 
 tags:
+  - name: Documentation
+    description: API documentation endpoints
+  - name: Authentication
+    description: API Key generation endpoints
   - name: Shows
     description: TV show information and filtering
   - name: Documentation
     description: API documentation endpoints
   - name: Authentication
     description: API Key generation endpoints
+
 
 paths:
   /api-docs:
@@ -1042,6 +1047,27 @@ components:
         profile_url:
           type: string
           example: "https://image.tmdb.org/profile17.jpg"
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          description: Human-readable error message
+          example: Name already exists - please choose a different name
+        errorCode:
+          type: string
+          description: Machine-readable error code
+          example: MSG_NAME_EXISTS
+        timestamp:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00.000Z'
 
   responses:
     NotFound:
