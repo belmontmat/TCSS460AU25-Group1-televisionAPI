@@ -4,6 +4,7 @@
 
 import {Router} from 'express';
 import showRoutes from './showRoutes';
+import protectedRoutes from './protected';
 
 const routes = Router();            // instantiate Router object for export/use
 
@@ -21,5 +22,7 @@ routes.get('/', (request, response) => {
 });
 
 routes.use('/shows', showRoutes);
+
+routes.use('/admin', protectedRoutes);
 
 export default routes;
