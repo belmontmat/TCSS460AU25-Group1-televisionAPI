@@ -9,6 +9,7 @@ import actorRoutes from './actorRoutes';
 import genreRoutes from './genreRoutes';
 import { apiKeyRoutes } from './apiKeyRoutes';
 import statsRoutes from './statsRoutes';
+import protectedRoutes from './protected';
 
 const routes = Router();            // instantiate Router object for export/use
 
@@ -40,5 +41,7 @@ routes.use('/admin', protectedRoutes);
 
 routes.use('/actors', actorRoutes);
 routes.use('/stats', statsRoutes);
+
+routes.use('/admin', protectedRoutes);
 
 export default routes;
