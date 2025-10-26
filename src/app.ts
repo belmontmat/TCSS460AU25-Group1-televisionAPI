@@ -21,6 +21,7 @@ const createApp = (): Express => {
 
     // MIDDLEWARE configuration
     app.use(cors());                // cross-origin middleware (move to middleware folder?)
+    app.use(express.json({ limit: '10mb' }));     // allow json payloads
 
     // Configure base ROUTES
     app.use('/', routes);           // Express router configuration
