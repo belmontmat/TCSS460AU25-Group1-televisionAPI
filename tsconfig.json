@@ -40,6 +40,7 @@
     "paths": {
       "@/*": ["*"],
       "@/types": ["types"],
+      "@/types/*": ["types/*"],
       "@controllers/*": ["controllers/*"],
       "@middleware/*": ["core/middleware/*"],
       "@utilities/*": ["core/utilities/*"],

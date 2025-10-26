@@ -4,6 +4,7 @@
 
 import {Router} from 'express';
 import showRoutes from './showRoutes';
+import { apiKeyRoutes } from './apiKeyRoutes';
 
 const routes = Router();            // instantiate Router object for export/use
 
@@ -21,5 +22,8 @@ routes.get('/', (request, response) => {
 });
 
 routes.use('/shows', showRoutes);
+
+routes.use('/api-key', apiKeyRoutes);
+
 
 export default routes;
