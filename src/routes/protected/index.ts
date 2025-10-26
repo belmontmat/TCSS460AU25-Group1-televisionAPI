@@ -2,6 +2,7 @@
  * All routes protected by an API key
  */
 
+import { createActor } from '@/controller/adminRoutes/adminActorsController';
 import { validateActorCreate } from '@/core/middleware/adminActorsValidation';
 import { Router } from 'express';
 
@@ -19,6 +20,6 @@ protectedRoutes.put('/shows/:id');
 protectedRoutes.delete('/shows/:id');
 
 /** Add a new actor */
-protectedRoutes.post('/actors', validateActorCreate);
+protectedRoutes.post('/actors', validateActorCreate, createActor);
 
 export default protectedRoutes;

@@ -21,5 +21,21 @@ export const createActor = async(request: Request, response: Response) => {
             });
             return;
         }
+         // Insert new actor
+        const result = await pool.query(
+            'INSERT INTO actors (name, profile_url) VALUES ($1, $2) RETURNING actor_id, name, profile_url',
+            [name, profile_url || null]
+        );
+
+        const newActor = result.rows[0];
+
+        response.status(201).json({
+            actor_id: newActor.actor_id,
+            name: newActor.name,
+            profile_url: newActor.profile_url
+        });
+    } catch (error) {
+        console.error('Error creating actor:', error);
+        response.status(500).json({ error: 'Internal server error' });
     }
 };
