@@ -3,7 +3,9 @@
  */
 
 import { createActor } from '@/controller/adminRoutes/adminActorsController';
+import { deleteShow } from '@/controller/adminRoutes/adminShowController';
 import { validateActorCreate } from '@/core/middleware/adminActorsValidation';
+import { validateId } from '@/core/middleware/sharedValidation';
 import { Router } from 'express';
 
 const protectedRoutes = Router();
@@ -14,10 +16,10 @@ const protectedRoutes = Router();
 protectedRoutes.post('/shows');
 
 /** Update show information */
-protectedRoutes.put('/shows/:id');
+protectedRoutes.put('/shows/:id', validateId);
 
 /** Delete a show by ID */
-protectedRoutes.delete('/shows/:id');
+protectedRoutes.delete('/shows/:id', validateId, deleteShow);
 
 /** Add a new actor */
 protectedRoutes.post('/actors', validateActorCreate, createActor);

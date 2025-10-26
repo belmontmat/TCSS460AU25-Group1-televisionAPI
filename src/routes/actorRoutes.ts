@@ -4,7 +4,8 @@
 
 import {Router} from 'express';
 import { getActors, getActorById, getActorShowsById, getActorTopRatedShows } from '@/controller/actorRoutesController';
-import { validateActorId, validateActorQueries, validateActorRatingCount } from '@/core/middleware/actorValidation';
+import { validateActorQueries, validateActorRatingCount } from '@/core/middleware/actorValidation';
+import { validateId } from '@/core/middleware/sharedValidation';
 
 const actorRoutes = Router();
 
@@ -17,16 +18,16 @@ actorRoutes.get('/', validateActorQueries, getActors);
 /**
  * Get detailed information about an actor by id
  */
-actorRoutes.get('/:id', validateActorId, getActorById);
+actorRoutes.get('/:id', validateId, getActorById);
 
 /**
  * Get all shows featuring a specific actor
  */
-actorRoutes.get('/:id/shows', validateActorId, getActorShowsById);
+actorRoutes.get('/:id/shows', validateId, getActorShowsById);
 
 /**
  * Get an actor's top rated shows
  */
-actorRoutes.get('/:id/ratings', validateActorId, validateActorRatingCount, getActorTopRatedShows);
+actorRoutes.get('/:id/ratings', validateId, validateActorRatingCount, getActorTopRatedShows);
 
 export default actorRoutes;
