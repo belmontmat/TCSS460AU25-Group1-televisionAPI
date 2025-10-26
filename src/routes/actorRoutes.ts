@@ -3,8 +3,8 @@
  */
 
 import {Router} from 'express';
-import { getActors, getActorById, getActorShowsById } from '@/controller/actorRoutesController';
-import { validateActorId, validateActorQueries } from '@/core/middleware/actorValidation';
+import { getActors, getActorById, getActorShowsById, getActorTopRatedShows } from '@/controller/actorRoutesController';
+import { validateActorId, validateActorQueries, validateActorRatingCount } from '@/core/middleware/actorValidation';
 
 const actorRoutes = Router();
 
@@ -23,5 +23,10 @@ actorRoutes.get('/:id', validateActorId, getActorById);
  * Get all shows featuring a specific actor
  */
 actorRoutes.get('/:id/shows', validateActorId, getActorShowsById);
+
+/**
+ * Get an actor's top rated shows
+ */
+actorRoutes.get('/:id/ratings', validateActorId, validateActorRatingCount, getActorTopRatedShows);
 
 export default actorRoutes;

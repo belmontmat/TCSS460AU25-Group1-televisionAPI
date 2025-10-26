@@ -40,3 +40,35 @@ export const validateActorId = (
     }
     next();
 };
+
+export const validateActorRatingCount = (
+    request: Request,
+    response: Response,
+    next: NextFunction
+): void => {
+    const count = request.query.count as string | undefined;
+    const countPattern = /^\d+$/;
+    // check for bad params
+    if (count !== undefined) {
+        if (!countPattern.test(count)) {
+            response.status(400).json({
+                error: 'Invalid count data.',
+                details: 'Count must be numeric.'
+            });
+            return;
+        } else {
+            // check for bounds
+            const countParsed: number = parseInt(count);
+
+            if (countParsed <= 0 || countParsed > 50) {
+                response.status(400).json({
+                    error: 'Invalid count data.',
+                    details: 'Count must be between 1 and 50 inclusive.'
+                });
+                return;
+            }
+        }
+    }
+
+    next();
+};

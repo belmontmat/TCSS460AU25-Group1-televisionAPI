@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { getPool } from '@/core/utilities/database';
 import { QueryResult } from 'pg';
-import { ActorShow, ActorShowEndpointReponse, ActorsSummary } from '@/types/responseTypes';
+import { ActorShow, ActorShowEndpointReponse, ActorsSummary, ShowSummary } from '@/types/responseTypes';
 import { convertActorShows, convertActorsSummary } from '@/core/utilities/convertActors';
+import { convertShowResponsesToShowSummary } from '@/core/utilities/convert';
 
 // GET ACTORS
 
@@ -129,7 +130,13 @@ export const getActorShowsById = async(request: Request, response: Response) => 
 
         // (2) get character and show information
         const showsResult = await pool.query(
-            'SELECT ts.show_id, ts.name, c.name as character_name FROM tv_show ts INNER JOIN characters c ON ts.show_id = c.show_id WHERE c.actor_id = $1 ORDER BY ts.name', [actorId]
+            `SELECT
+                ts.show_id,
+                ts.name,
+                c.name as character_name
+            FROM tv_show ts
+            INNER JOIN characters c ON ts.show_id = c.show_id
+            WHERE c.actor_id = $1 ORDER BY ts.name`, [actorId]
         );
 
         const showData: ActorShow[] = convertActorShows(showsResult);
@@ -144,5 +151,56 @@ export const getActorShowsById = async(request: Request, response: Response) => 
 
     } catch (error) {
         response.status(500).json({error: 'Internal server error' + error});
+    }
+};
+
+export const getActorTopRatedShows = async (request: Request, response: Response) => {
+    try {
+        const actorId = parseInt(request.params.id as string);
+        const count = Math.min(parseInt(request.query.count as string) || 10, 50);
+
+        const pool = getPool();
+
+        // Verify actor exists
+        const actorResult = await pool.query(
+            'SELECT actor_id, name FROM actors WHERE actor_id = $1',
+            [actorId]
+        );
+
+        if (actorResult.rows.length === 0) {
+            response.status(404).json({ error: 'Actor not found' });
+            return;
+        }
+
+        const showsResult = await pool.query(
+            `SELECT 
+                ts.show_id,
+                ts.name,
+                ts.original_name,
+                ts.first_air_date,
+                ts.status,
+                ts.seasons,
+                ts.episodes,
+                ts.tmdb_rating,
+                ts.popularity,
+                ts.poster_url
+             FROM tv_show ts
+             INNER JOIN characters c ON ts.show_id = c.show_id
+             WHERE c.actor_id = $1
+             ORDER BY ts.tmdb_rating DESC, ts.vote_count DESC
+             LIMIT $2`,
+            [actorId, count]
+        );
+        
+        const shows: ShowSummary[] = showsResult.rows.map(convertShowResponsesToShowSummary);
+
+        response.json({
+            actor: actorResult.rows[0].name,
+            count: shows.length,
+            shows: shows
+        });
+
+    } catch (error) {
+        response.status(500).json({ error: 'Internal server error' + error });
     }
 };
