@@ -21,6 +21,10 @@ servers:
 tags:
   - name: Shows
     description: TV show information and filtering
+  - name: Actors
+    description: Actor information and their shows
+  - name: Admin
+    description: Administrative operations (requires authentication)
   - name: Documentation
     description: API documentation endpoints
 
@@ -103,8 +107,229 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
+  /actors:
+    get:
+      tags:
+        - Actors
+      summary: Get all actors
+      description: Retrieve a list of all actors in the database
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: name
+          in: query
+          description: Filter by actor name (max 100 characters)
+          schema:
+            type: string
+          example: "Tom Hanks"
+      responses:
+        '200':
+          description: List of actors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  page:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Actor'
+
+  /actors/{id}:
+    get:
+      tags:
+        - Actors
+      summary: Get actor profile
+      description: Retrieve detailed information about an actor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Actor name
+          schema:
+            type: integer
+          example: "Bryan Cranston"
+      responses:
+        '200':
+          description: Actor profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Actor'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /actors/{id}/shows:
+    get:
+      tags:
+        - Actors
+      summary: Get shows by actor
+      description: Retrieve all shows featuring a specific actor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Shows featuring the actor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  actor:
+                    type: string
+                  count:
+                    type: integer
+                  shows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        show_id:
+                          type: integer
+                        name:
+                          type: string
+                        character:
+                          type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+          
+
+  /actors/{id}/ratings:
+    get:
+      tags:
+        - Actors
+      summary: Get actor's highest rated shows
+      description: Retrieve the highest rated shows featuring an actor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: count
+          in: query
+          description: Number of shows to return (minimum 1, max 50, default 10)
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+      responses:
+        '200':
+          description: Highest rated shows
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  actor:
+                    type: string
+                  count:
+                    type: integer
+                  shows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShowSummary'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /admin/actors:
+      post:
+        tags:
+          - Admin
+        summary: Add new actor
+        description: Add a new actor to the database (requires admin authentication). Name cannot be empty. Property "name" can have a maximum of 250 characters, and "profile_url" a maximum of 500. If successful, the newly created entry will be returned. If an actor's name is already present, an HTTP/400 is returned indicating as such, along with the existing actor ID.
+        security:
+          - ApiKeyAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: string
+                  profile_url:
+                    type: string
+        responses:
+          '201':
+            description: Actor created successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Actor'
+          '400':
+            description: Bad request - invalid parameters
+            content:
+              application/json:
+                schema:
+                  oneOf:
+                    - type: object
+                      properties:
+                        error:
+                          type: string
+                          example: "Invalid format"
+                        details:
+                          type: string
+                    - type: object
+                      properties:
+                        error:
+                          type: string
+                          example: "Actor already exists"
+                        details:
+                          type: string
+                          example: "An actor with this name already exists in the database"
+                        existingID:
+                          type: integer
+                          example: 1234
+                examples:
+                  invalidFormat:
+                    summary: Invalid format
+                    value:
+                      error: "Invalid format"
+                      details: "Name cannot be empty"
+                  nameAlreadyExists:
+                    summary: Existing Actor
+                    value:
+                      error: "Actor already exists"
+                      details: "An actor with this name already exists in the database"
+                      existingID: 1234
+            
+          '401':
+            $ref: '#/components/responses/Unauthorized'
+          '500':
+            $ref: '#/components/responses/ServerError'
 
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Admin API key for authentication
   parameters:
     PageParam:
       name: page
@@ -247,8 +472,42 @@ components:
                   character: "Walter White"
                   profile_url: "https://image.tmdb.org/profile17.jpg"
                   order_num: 1
+    Actor:
+      type: object
+      properties:
+        actor_id:
+          type: integer
+          example: 17
+        name:
+          type: string
+          example: "Bryan Cranston"
+        profile_url:
+          type: string
+          example: "https://image.tmdb.org/profile17.jpg"
 
   responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid query parameters"
+              details:
+                type: string
+    Unauthorized:
+      description: Unauthorized - missing or invalid API key
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized access"
     NotFound:
       description: Resource not found
       content:
