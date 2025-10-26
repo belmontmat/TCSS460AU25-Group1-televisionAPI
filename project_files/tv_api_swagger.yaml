@@ -451,6 +451,12 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PageParam'
         - $ref: '#/components/parameters/LimitParam'
+        - name: name
+          in: query
+          description: Filter by actor name (max 100 characters)
+          schema:
+            type: string
+          example: "Tom Hanks"
       responses:
         '200':
           description: List of actors
@@ -468,19 +474,19 @@ paths:
                     items:
                       $ref: '#/components/schemas/Actor'
 
-  /actors/{name}:
+  /actors/{id}:
     get:
       tags:
         - Actors
       summary: Get actor profile
       description: Retrieve detailed information about an actor
       parameters:
-        - name: name
+        - name: id
           in: path
           required: true
           description: Actor name
           schema:
-            type: string
+            type: integer
           example: "Bryan Cranston"
       responses:
         '200':
@@ -488,22 +494,26 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ActorDetail'
+                $ref: '#/components/schemas/Actor'
         '404':
           $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
-  /actors/{name}/shows:
+  /actors/{id}/shows:
     get:
       tags:
         - Actors
       summary: Get shows by actor
       description: Retrieve all shows featuring a specific actor
       parameters:
-        - name: name
+        - name: id
           in: path
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: Shows featuring the actor
@@ -527,22 +537,29 @@ paths:
                           type: string
                         character:
                           type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+          
 
-  /actors/{name}/ratings:
+  /actors/{id}/ratings:
     get:
       tags:
         - Actors
       summary: Get actor's highest rated shows
       description: Retrieve the highest rated shows featuring an actor
       parameters:
-        - name: name
+        - name: id
           in: path
           required: true
           schema:
-            type: string
+            type: integer
         - name: count
           in: query
-          description: Number of shows to return
+          description: Number of shows to return (minimum 1, max 50, default 10)
           schema:
             type: integer
             default: 10
@@ -554,9 +571,22 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ShowSummary'
+                type: object
+                properties:
+                  actor:
+                    type: string
+                  count:
+                    type: integer
+                  shows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShowSummary'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
   /actors/posters:
     get:
       tags:
@@ -1035,26 +1065,6 @@ components:
           type: string
           example: "https://image.tmdb.org/profile17.jpg"
 
-    ActorDetail:
-      allOf:
-        - $ref: '#/components/schemas/Actor'
-        - type: object
-          properties:
-            show_count:
-              type: integer
-              description: Number of shows the actor has appeared in
-            shows:
-              type: array
-              items:
-                type: object
-                properties:
-                  show_id:
-                    type: integer
-                  name:
-                    type: string
-                  character:
-                    type: string
-
   responses:
     BadRequest:
       description: Bad request - invalid parameters
@@ -1100,7 +1110,7 @@ components:
             properties:
               error:
                 type: string
-                example: "Show not found"
+                example: "Resource not found"
     
     ServerError:
       description: Internal server error
