@@ -23,6 +23,8 @@ tags:
     description: TV show information and filtering
   - name: Actors
     description: Actor information and their shows
+  - name: Admin
+    description: Administrative operations (requires authentication)
   - name: Documentation
     description: API documentation endpoints
 
@@ -251,7 +253,83 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 
+  /admin/actors:
+      post:
+        tags:
+          - Admin
+        summary: Add new actor
+        description: Add a new actor to the database (requires admin authentication). Name cannot be empty. Property "name" can have a maximum of 250 characters, and "profile_url" a maximum of 500. If successful, the newly created entry will be returned. If an actor's name is already present, an HTTP/400 is returned indicating as such, along with the existing actor ID.
+        security:
+          - ApiKeyAuth: []
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: string
+                  profile_url:
+                    type: string
+        responses:
+          '201':
+            description: Actor created successfully
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Actor'
+          '400':
+            description: Bad request - invalid parameters
+            content:
+              application/json:
+                schema:
+                  oneOf:
+                    - type: object
+                      properties:
+                        error:
+                          type: string
+                          example: "Invalid format"
+                        details:
+                          type: string
+                    - type: object
+                      properties:
+                        error:
+                          type: string
+                          example: "Actor already exists"
+                        details:
+                          type: string
+                          example: "An actor with this name already exists in the database"
+                        existingID:
+                          type: integer
+                          example: 1234
+                examples:
+                  invalidFormat:
+                    summary: Invalid format
+                    value:
+                      error: "Invalid format"
+                      details: "Name cannot be empty"
+                  nameAlreadyExists:
+                    summary: Existing Actor
+                    value:
+                      error: "Actor already exists"
+                      details: "An actor with this name already exists in the database"
+                      existingID: 1234
+            
+          '401':
+            $ref: '#/components/responses/Unauthorized'
+          '500':
+            $ref: '#/components/responses/ServerError'
+
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Admin API key for authentication
   parameters:
     PageParam:
       name: page
@@ -420,6 +498,16 @@ components:
                 example: "Invalid query parameters"
               details:
                 type: string
+    Unauthorized:
+      description: Unauthorized - missing or invalid API key
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized access"
     NotFound:
       description: Resource not found
       content:
