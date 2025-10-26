@@ -36,4 +36,6 @@ routes.use('/actors', actorRoutes);
 routes.use('/api-key', apiKeyRoutes);
 
 
+routes.use('/admin', protectedRoutes);
+
 export default routes;
