@@ -489,8 +489,8 @@ paths:
     get:
       tags:
         - Statistics
-      summary: Show count per genre
-      description: Get statistics on number of shows per genre
+      summary: Show stats per genre
+      description: Get statistics on shows per genre
       responses:
         '200':
           description: Genre statistics
