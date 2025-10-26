@@ -639,7 +639,7 @@ paths:
       tags:
         - Admin
       summary: Add new actor
-      description: Add a new actor to the database (requires admin authentication)
+      description: Add a new actor to the database (requires admin authentication). Name cannot be empty. Property "name" can have a maximum of 250 characters, and "profile_url" a maximum of 500. If successful, the newly created entry will be returned. If an actor's name is already present, an HTTP/400 is returned indicating as such, along with the existing actor ID.
       security:
         - ApiKeyAuth: []
       requestBody:
@@ -662,8 +662,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Actor'
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Invalid format"
+                      details:
+                        type: string
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Actor already exists"
+                      details:
+                        type: string
+                        example: "An actor with this name already exists in the database"
+                      existingID:
+                        type: integer
+                        example: 1234
+              examples:
+                invalidFormat:
+                  summary: Invalid format
+                  value:
+                    error: "Invalid format"
+                    details: "Name cannot be empty"
+                nameAlreadyExists:
+                  summary: Existing Actor
+                  value:
+                    error: "Actor already exists"
+                    details: "An actor with this name already exists in the database"
+                    existingID: 1234
+          
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
 components:
   securitySchemes:
