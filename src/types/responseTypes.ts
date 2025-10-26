@@ -102,8 +102,14 @@ export interface ActorsResponse {
   order_num: number;
 }
 
-export interface GenreCountResponse {
-  genre_id: number;
+export interface AggregateResponseID extends AggregateResponse {
+  id: number;
+}
+
+export interface AggregateResponse {
   name: string;
   show_count: number;
+  avg_rating: string;
+  min_rating: number;
+  max_rating: number;
 }

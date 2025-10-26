@@ -499,20 +499,19 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    genre_id:
-                      type: integer
-                    genre:
-                      type: string
-                    show_count:
-                      type: integer
+                  allOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                    - $ref: '#/components/schemas/AggregateResponse'
 
   /stats/networks:
     get:
       tags:
         - Statistics
-      summary: Show count per network
+      summary: Stats per network
       description: Get statistics on number of shows per network
       responses:
         '200':
@@ -522,58 +521,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    network:
-                      type: string
-                    show_count:
-                      type: integer
-
-  /stats/ratings/genre:
-    get:
-      tags:
-        - Statistics
-      summary: Average rating per genre
-      description: Get average TMDb rating for each genre
-      responses:
-        '200':
-          description: Rating statistics by genre
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    genre:
-                      type: string
-                    avg_rating:
-                      type: number
-                    show_count:
-                      type: integer
-
-  /stats/ratings/network:
-    get:
-      tags:
-        - Statistics
-      summary: Average rating per network
-      description: Get average TMDb rating for each network
-      responses:
-        '200':
-          description: Rating statistics by network
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    network:
-                      type: string
-                    avg_rating:
-                      type: number
-                    show_count:
-                      type: integer
+                  $ref: '#/components/schemas/AggregateResponse'
 
   /admin/shows:
     post:
@@ -752,6 +700,20 @@ components:
         poster_url:
           type: string
           example: "https://image.tmdb.org/poster123.jpg"
+
+    AggregateResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        show_count:
+          type: integer
+        avg_rating:
+          type: number
+        min_rating:
+          type: number
+        max_rating:
+          type: number
 
     ShowDetail:
       allOf:
