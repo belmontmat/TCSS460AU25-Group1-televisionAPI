@@ -147,14 +147,3 @@ export interface GenreCountResponse {
   name: string;
   show_count: number;
 }
-export interface AggregateResponseID extends AggregateResponse {
-  id: number;
-}
-
-export interface AggregateResponse {
-  name: string;
-  show_count: number;
-  avg_rating: string;
-  min_rating: number;
-  max_rating: number;
-}

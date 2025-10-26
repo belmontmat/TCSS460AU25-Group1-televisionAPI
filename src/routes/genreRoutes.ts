@@ -12,7 +12,7 @@ genreRoutes.get('/', async(request, response) => {
         const result = await getGenreList();
         return response.json(result);
     } catch (error) {
-        response.status(500).json({error: 'Internal server error: ' + error});
+        return response.status(500).json({error: 'Internal server error: ' + error});
     }
 });
 

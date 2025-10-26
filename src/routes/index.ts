@@ -4,7 +4,6 @@
 
 import {Router} from 'express';
 import showRoutes from './showRoutes';
-import statsRoutes from './statsRoutes';
 import protectedRoutes from './protected';
 import actorRoutes from './actorRoutes';
 import genreRoutes from './genreRoutes';
