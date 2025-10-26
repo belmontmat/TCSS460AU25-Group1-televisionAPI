@@ -426,6 +426,13 @@ paths:
                           type: string
                         character:
                           type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+          
 
   /actors/{id}/ratings:
     get:
@@ -441,7 +448,7 @@ paths:
             type: integer
         - name: count
           in: query
-          description: Number of shows to return
+          description: Number of shows to return (minimum 1, max 50, default 10)
           schema:
             type: integer
             default: 10
@@ -453,9 +460,22 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ShowSummary'
+                type: object
+                properties:
+                  actor:
+                    type: string
+                  count:
+                    type: integer
+                  shows:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShowSummary'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
   /actors/posters:
     get:
       tags:
