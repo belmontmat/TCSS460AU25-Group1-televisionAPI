@@ -36,6 +36,27 @@ export interface ShowsResponse {
   data: ShowSummary[];
 }
 
+export interface ShowsFilterResponse {
+  count: number;
+  page: number;
+  limit: number;
+  filters: {
+    actors: string, // actor names comma separated
+    genres: string, // genre names semicolon-separated
+    network: string,
+    studios: string, // studio names semicolon-separated
+    status: string,
+    minRating: number,
+    maxRating: number,
+    startDate: string,
+    endDate: string,
+    country: string,
+    creators: string,
+    name: string,
+  };
+  data: ShowSummary[];
+}
+
 export interface ShowResponse {
   show_id: string;
   name: string;
@@ -49,7 +70,7 @@ export interface ShowResponse {
   popularity: number;
   tmdb_rating: number;
   vote_count: number;
-  creators: string; // semicolon-separated string
+  creators: string;
   poster_url: string;
   backdrop_url: string;
 }
@@ -86,6 +107,28 @@ export interface ActorsResponse extends ActorsSummary {
   order_num: number;
 }
 
+export interface AggregateResponseID extends AggregateResponse {
+  id: number;
+}
+
+export interface AggregateResponse {
+  name: string;
+  show_count: number;
+  avg_rating: string;
+  min_rating: number;
+  max_rating: number;
+}
+/** Actor details used for getting actor info by ID */
+export interface ActorShowDetails extends ActorsSummary {
+  show_count: number;
+  shows: [
+    {
+      show_id: number;
+      name: string;
+      character: string;
+    }
+  ]
+}
 /** Actor show details used for getting actor info by ID */
 export interface ActorShow {
   show_id: number;
