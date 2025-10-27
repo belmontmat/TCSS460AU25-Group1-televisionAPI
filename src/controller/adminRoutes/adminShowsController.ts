@@ -233,13 +233,7 @@ export const updateShow = async (request: Request, response: Response): Promise<
       response.status(400).json({ error: 'Show ID is required' });
       return;
     }
-
     const showId = parseInt(request.params.id);
-    if (isNaN(showId)) {
-      response.status(400).json({ error: 'Invalid show ID' });
-      return;
-    }
-
     const showData: ShowData = request.body;
     const pool = getPool();
 
@@ -336,13 +330,7 @@ export const deleteShow = async (request: Request, response: Response): Promise<
       response.status(400).json({ error: 'Show ID is required' });
       return;
     }
-
     const showId = parseInt(request.params.id);
-    if (isNaN(showId)) {
-      response.status(400).json({ error: 'Invalid show ID' });
-      return;
-    }
-
     const pool = getPool();
 
     // Begin transaction

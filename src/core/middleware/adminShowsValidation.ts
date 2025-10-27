@@ -381,6 +381,39 @@ export const validateShowCreate = (
     next();
 };
 
+export const validateShowId = (
+    request: Request,
+    response: Response,
+    next: NextFunction
+) => {
+    if (!request.params.id) {
+        response.status(400).json({ 
+            error: 'Show ID is required',
+            details: 'Show ID must be provided in the URL parameters'
+        });
+        return;
+    }
+
+    const showId = parseInt(request.params.id);
+    if (isNaN(showId)) {
+        response.status(400).json({ 
+            error: 'Invalid show ID',
+            details: 'Show ID must be a valid integer'
+        });
+        return;
+    }
+
+    if (showId <= 0) {
+        response.status(400).json({ 
+            error: 'Invalid show ID',
+            details: 'Show ID must be a positive integer'
+        });
+        return;
+    }
+
+    next();
+};
+
 export const validateShowUpdate = (
     request: Request,
     response: Response,
