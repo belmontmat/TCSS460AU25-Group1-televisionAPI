@@ -3,7 +3,9 @@
  */
 
 import { createActor } from '@/controller/adminRoutes/adminActorsController';
+import { addShow } from '@/controller/adminRoutes/adminShowsController';
 import { validateActorCreate } from '@/core/middleware/adminActorsValidation';
+import { validateShowCreate } from '@/core/middleware/adminShowsValidation';
 import { Router } from 'express';
 
 const protectedRoutes = Router();
@@ -11,7 +13,7 @@ const protectedRoutes = Router();
 // ADD API Key auth middleware here
 
 /** Add a new TV show */
-protectedRoutes.post('/shows');
+protectedRoutes.post('/shows', validateShowCreate, addShow);
 
 /** Update show information */
 protectedRoutes.put('/shows/:id');
