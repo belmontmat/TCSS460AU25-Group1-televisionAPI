@@ -3,9 +3,9 @@
  */
 
 import { createActor } from '@/controller/adminRoutes/adminActorsController';
-import { addShow } from '@/controller/adminRoutes/adminShowsController';
+import { addShow, deleteShow, updateShow } from '@/controller/adminRoutes/adminShowsController';
 import { validateActorCreate } from '@/core/middleware/adminActorsValidation';
-import { validateShowCreate } from '@/core/middleware/adminShowsValidation';
+import { validateShowCreate, validateShowUpdate } from '@/core/middleware/adminShowsValidation';
 import { Router } from 'express';
 import { apiKeyAuth } from '@middleware/apiKeyAuth';
 
@@ -18,10 +18,10 @@ protectedRoutes.use(apiKeyAuth);
 protectedRoutes.post('/shows', validateShowCreate, addShow);
 
 /** Update show information */
-protectedRoutes.put('/shows/:id');
+protectedRoutes.put('/shows/:id', validateShowUpdate, updateShow);
 
 /** Delete a show by ID */
-protectedRoutes.delete('/shows/:id');
+protectedRoutes.delete('/shows/:id', deleteShow);
 
 /** Add a new actor */
 protectedRoutes.post('/actors', validateActorCreate, createActor);

@@ -1,4 +1,3 @@
-// adminShowsController.ts
 import { Request, Response } from 'express';
 import { getPool } from '@/core/utilities/database';
 
