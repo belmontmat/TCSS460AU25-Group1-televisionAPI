@@ -31,6 +31,7 @@ tags:
     description: API Key generation endpoints
 
 
+
 paths:
   /api-docs:
     get:
@@ -1079,7 +1080,7 @@ components:
             properties:
               error:
                 type: string
-                example: "No Shows Found with ID: {id}"
+                example: "Resource not found"
     
     ServerError:
       description: Internal server error

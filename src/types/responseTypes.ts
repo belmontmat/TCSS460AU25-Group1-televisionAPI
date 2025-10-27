@@ -142,8 +142,3 @@ export interface ActorShowEndpointReponse {
   shows: ActorShow[];
 }
 
-export interface GenreCountResponse {
-  genre_id: number;
-  name: string;
-  show_count: number;
-}
