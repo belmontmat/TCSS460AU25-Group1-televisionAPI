@@ -7,10 +7,12 @@ import { addShow } from '@/controller/adminRoutes/adminShowsController';
 import { validateActorCreate } from '@/core/middleware/adminActorsValidation';
 import { validateShowCreate } from '@/core/middleware/adminShowsValidation';
 import { Router } from 'express';
+import { apiKeyAuth } from '@middleware/apiKeyAuth';
 
 const protectedRoutes = Router();
 
-// ADD API Key auth middleware here
+// Apply API key authentication to all routes in this router
+protectedRoutes.use(apiKeyAuth);
 
 /** Add a new TV show */
 protectedRoutes.post('/shows', validateShowCreate, addShow);
