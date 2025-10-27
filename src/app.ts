@@ -13,7 +13,7 @@ import { load } from 'js-yaml';
 import path from 'path';
 
 const swaggerDocument = load(
-    readFileSync(path.join(__dirname, '../project_files/swagger_temp.yaml'), 'utf8')
+    readFileSync(path.join(__dirname, '../project_files/tv_api_swagger.yaml'), 'utf8')
   ) as swaggerUi.JsonObject;
 
 const createApp = (): Express => {
