@@ -12,6 +12,14 @@
 >
 
 ---
+## Contents
+* [Alpha Sprint 1](#alpha-sprint-1)
+* [Beta Sprint 2](#beta-sprint-2-week-3---october-13---october-19)
+* [Beta Sprint 3](#beta-sprint-3-week-4---october-20---october-26)
+
+---
+
+
 # Alpha Sprint 1 (Week 2 - October 6 - October 12)
 Initial setup and planning. Setup the GitHub repository, drafted
 ideas on how the API will work and summarized them in a functionality
@@ -72,6 +80,8 @@ Sunday 9:30 am, Sean and Preston arrived on time and began setting up Render. Ma
 Render has a 30 day postgres limit so we are planning on swapping to Heroku. Unfortunately, we've had trouble with getting credits from github.
 
 # Beta Sprint 3 (Week 4 - October 20 - October 26)
+API web address (still the same): https://g1-tvapi.onrender.com/api-docs/
+
 This week we added the rest of the routes from our design docs. During implementation schemas, data types, route params, and routes themselves were changed to work better with shared interfaces. We also added Api key requirements to our protected routes.
 
 ## Contributions
@@ -81,6 +91,8 @@ This week we added the rest of the routes from our design docs. During implement
 * Abdul: 
 
 ## Meeting Summary
+Note: Due to the AWS/Canvas outage, we skipped our Monday morning meeting and did not reschedule due to time conflicts.
+
 ### Meeting 1
 10-23-25
 Discussed Mathew's PR, changes to the structure
@@ -94,4 +106,5 @@ Eventually will work on tests, update documents for this week
 Knocked out merge conflicts and combined all our work
 
 ## Sprint Comments and Concerns
-Render has a 30 day postgres limit so we are planning on swapping to supabase.
+ * Render has a 30 day postgres limit so we are planning on swapping to supabase.
+ * We had Claude write our tests, but some of the tests our out of date due to minor refinements in our API documentation that Claude didn't account for. These will have to be updated. We also noticed a few tests that don't pass which we are investigating.
