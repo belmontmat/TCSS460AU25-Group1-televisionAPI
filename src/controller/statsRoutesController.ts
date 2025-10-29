@@ -3,9 +3,9 @@
  */
 
 import { getPool } from '@/core/utilities/database';
-import { AggregateResponse, AggregateResponseID } from '@/types/responseTypes';
+import { AggregateResponse } from '@/types/responseTypes';
 
-export const getGenreStats = async (): Promise<AggregateResponseID[]> => {
+export const getGenreStats = async (): Promise<AggregateResponse[]> => {
 
   const pool = getPool();
 
@@ -25,11 +25,11 @@ export const getGenreStats = async (): Promise<AggregateResponseID[]> => {
         ORDER BY show_count DESC
     `);
 
-  const genreCounts: AggregateResponseID[] = result.rows.map(row => ({
+  const genreCounts: AggregateResponse[] = result.rows.map(row => ({
         id: parseInt(row.genre_id),
         name: row.name,
         show_count: parseInt(row.show_count),
-        avg_rating: parseFloat(row.avg_rating).toFixed(2),
+        avg_rating: Math.round(parseFloat(row.avg_rating) * 100) / 100,
         min_rating: parseFloat(row.min_rating),
         max_rating: parseFloat(row.max_rating)
     }));
@@ -37,12 +37,13 @@ export const getGenreStats = async (): Promise<AggregateResponseID[]> => {
   return genreCounts;
 };
 
+// Network stats does not return IDs since networks have multiple IDs for the same network name (different countries)
 export const getNetworkStats = async (): Promise<AggregateResponse[]> => {
 
   const pool = getPool();
 
   const result = await pool.query(`
-        SELECT 
+        SELECT
             n.name, 
             COUNT(s.show_id) AS show_count,
             AVG(s.tmdb_rating) AS avg_rating,
@@ -58,7 +59,7 @@ export const getNetworkStats = async (): Promise<AggregateResponse[]> => {
     const networkCounts: AggregateResponse[] = result.rows.map(row => ({
         name: row.name,
         show_count: parseInt(row.show_count),
-        avg_rating: parseFloat(row.avg_rating).toFixed(2),
+        avg_rating: Math.round(parseFloat(row.avg_rating) * 100) / 100,
         min_rating: parseFloat(row.min_rating),
         max_rating: parseFloat(row.max_rating)
     }));
@@ -67,7 +68,7 @@ export const getNetworkStats = async (): Promise<AggregateResponse[]> => {
   return networkCounts;
 };
 
-export const getActorStats = async (): Promise<AggregateResponseID[]> => { //This needs to be tested when the actors data is repopulated (duplicates)
+export const getActorStats = async (): Promise<AggregateResponse[]> => { //This needs to be tested when the actors data is repopulated (duplicates)
     const pool = getPool();
     const result = await pool.query(`
         SELECT 
@@ -87,11 +88,11 @@ export const getActorStats = async (): Promise<AggregateResponseID[]> => { //Thi
     `);
 
     
-    const actorStats: AggregateResponseID[] = result.rows.map(row => ({
+    const actorStats: AggregateResponse[] = result.rows.map(row => ({
         id: parseInt(row.actor_id),
         name: row.name,
         show_count: parseInt(row.show_count),
-        avg_rating: parseFloat(row.avg_rating).toFixed(2),
+        avg_rating: Math.round(parseFloat(row.avg_rating) * 100) / 100,
         min_rating: parseFloat(row.min_rating),
         max_rating: parseFloat(row.max_rating)
     }));
@@ -115,9 +116,9 @@ export const getYearStats = async (): Promise<AggregateResponse[]> => {
     `);
     
     const yearStats: AggregateResponse[] = result.rows.map(row => ({
-        name: row.year,
+        year: parseInt(row.year),
         show_count: parseInt(row.show_count),
-        avg_rating: parseFloat(row.avg_rating).toFixed(2),
+        avg_rating: Math.round(parseFloat(row.avg_rating) * 100) / 100,
         min_rating: parseFloat(row.min_rating),
         max_rating: parseFloat(row.max_rating)
     }));
@@ -141,9 +142,9 @@ export const getCountryStats = async (): Promise<AggregateResponse[]> => {
     `);
     
     const countryStats: AggregateResponse[] = result.rows.map(row => ({
-        name: row.network_country,
+        country: row.network_country,
         show_count: parseInt(row.show_count),
-        avg_rating: parseFloat(row.avg_rating).toFixed(2),
+        avg_rating: Math.round(parseFloat(row.avg_rating) * 100) / 100,
         min_rating: parseFloat(row.min_rating),
         max_rating: parseFloat(row.max_rating)
     }));
@@ -167,9 +168,9 @@ export const getStatusStats = async (): Promise<AggregateResponse[]> => {
     `);
     
     const statusStats: AggregateResponse[] = result.rows.map(row => ({
-        name: row.status,
+        status: row.status,
         show_count: parseInt(row.show_count),
-        avg_rating: parseFloat(row.avg_rating).toFixed(2),
+        avg_rating: Math.round(parseFloat(row.avg_rating) * 100) / 100,
         min_rating: parseFloat(row.min_rating),
         max_rating: parseFloat(row.max_rating)
     }));
@@ -197,7 +198,7 @@ export const getCompanyStats = async (): Promise<AggregateResponse[]> => {
     const companyRatings: AggregateResponse[] = result.rows.map(row => ({
         name: row.name,
         show_count: parseInt(row.show_count),
-        avg_rating: parseFloat(row.avg_rating).toFixed(2),
+        avg_rating: Math.round(parseFloat(row.avg_rating) * 100) / 100,
         min_rating: parseFloat(row.min_rating),
         max_rating: parseFloat(row.max_rating)
     }));

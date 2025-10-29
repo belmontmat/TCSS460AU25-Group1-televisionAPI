@@ -107,14 +107,13 @@ export interface ActorsResponse extends ActorsSummary {
   order_num: number;
 }
 
-export interface AggregateResponseID extends AggregateResponse {
-  id: number;
-}
-
 export interface AggregateResponse {
-  name: string;
+  id?: number;
+  name?: string;
+  year?: number;
+  status?: string;
   show_count: number;
-  avg_rating: string;
+  avg_rating: number;
   min_rating: number;
   max_rating: number;
 }
