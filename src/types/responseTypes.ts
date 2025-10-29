@@ -80,6 +80,15 @@ export interface GenreResponse {
   name: string;
 }
 
+/**
+ * GenreResponse is the genre itself, GenreEndpointResponse is the
+ * format returned to the API client.
+ */
+export interface GenreEndpointResponse{
+  count: number;
+  data: GenreResponse[];
+}
+
 export interface NetworkResponse {
   network_id: number;
   name: string;
