@@ -335,6 +335,19 @@ paths:
               schema:
                 type: array
                 items: { $ref: '#/components/schemas/AggregateResponse' }
+              example:
+                - id: 18
+                  name: "Drama"
+                  show_count: 1250
+                  avg_rating: 7.85
+                  min_rating: 3.2
+                  max_rating: 9.8
+                - id: 35
+                  name: "Comedy"
+                  show_count: 980
+                  avg_rating: 7.45
+                  min_rating: 4.1
+                  max_rating: 9.5
 
   /stats/networks:
     get:
@@ -348,6 +361,17 @@ paths:
               schema:
                 type: array
                 items: { $ref: '#/components/schemas/AggregateResponse' }
+              example:
+                - name: "HBO"
+                  show_count: 145
+                  avg_rating: 8.25
+                  min_rating: 5.5
+                  max_rating: 9.8
+                - name: "Netflix"
+                  show_count: 320
+                  avg_rating: 7.65
+                  min_rating: 4.2
+                  max_rating: 9.3
 
   /stats/actors:
     get:
@@ -361,6 +385,19 @@ paths:
               schema:
                 type: array
                 items: { $ref: '#/components/schemas/AggregateResponse' }
+              example:
+                - id: 7399
+                  name: "Ben Mendelsohn"
+                  show_count: 12
+                  avg_rating: 8.15
+                  min_rating: 6.8
+                  max_rating: 9.2
+                - id: 1223
+                  name: "Bryan Cranston"
+                  show_count: 8
+                  avg_rating: 8.75
+                  min_rating: 7.5
+                  max_rating: 9.5
 
   /stats/years:
     get:
@@ -373,12 +410,18 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
-                  type: object
-                  properties:
-                    year: { type: integer }
-                    show_count: { type: integer }
-                    avg_rating: { type: number }
+                items: { $ref: '#/components/schemas/AggregateResponse' }
+              example:
+                - year: 2024
+                  show_count: 156
+                  avg_rating: 7.65
+                  min_rating: 4.5
+                  max_rating: 9.1
+                - year: 2023
+                  show_count: 234
+                  avg_rating: 7.82
+                  min_rating: 3.8
+                  max_rating: 9.4
 
   /stats/countries:
     get:
@@ -391,12 +434,18 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
-                  type: object
-                  properties:
-                    country: { type: string }
-                    show_count: { type: integer }
-                    avg_rating: { type: number }
+                items: { $ref: '#/components/schemas/AggregateResponse' }
+              example:
+                - country: "US"
+                  show_count: 3456
+                  avg_rating: 7.55
+                  min_rating: 2.1
+                  max_rating: 9.8
+                - country: "GB"
+                  show_count: 892
+                  avg_rating: 7.95
+                  min_rating: 4.3
+                  max_rating: 9.6
 
   /stats/status:
     get:
@@ -409,11 +458,18 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
-                  type: object
-                  properties:
-                    status: { type: string }
-                    show_count: { type: integer }
+                items: { $ref: '#/components/schemas/AggregateResponse' }
+              example:
+                - status: "Ended"
+                  show_count: 2145
+                  avg_rating: 7.85
+                  min_rating: 2.5
+                  max_rating: 9.8
+                - status: "Returning Series"
+                  show_count: 1567
+                  avg_rating: 7.65
+                  min_rating: 3.2
+                  max_rating: 9.5
 
   /stats/companies:
     get:
@@ -427,6 +483,17 @@ paths:
               schema:
                 type: array
                 items: { $ref: '#/components/schemas/AggregateResponse' }
+              example:
+                - name: "Warner Bros. Television"
+                  show_count: 234
+                  avg_rating: 7.92
+                  min_rating: 4.5
+                  max_rating: 9.6
+                - name: "Sony Pictures Television"
+                  show_count: 189
+                  avg_rating: 7.68
+                  min_rating: 5.1
+                  max_rating: 9.3
 
   /admin/shows:
     post:
@@ -564,10 +631,12 @@ components:
       name: page
       in: query
       schema: { type: integer, default: 1, minimum: 1 }
+      example: 1
     LimitParam:
       name: limit
       in: query
       schema: { type: integer, default: 50, minimum: 1, maximum: 100 }
+      example: 50
 
   schemas:
     ShowSummary:
@@ -610,6 +679,8 @@ components:
                 properties:
                   network_id: { type: integer }
                   name: { type: string }
+                  logo: { type: string, format: uri }
+                  country: { type: string }
             companies:
               type: array
               items:
@@ -643,7 +714,6 @@ components:
         episodes: { type: integer, minimum: 0 }
         tmdb_rating: { type: number, minimum: 0, maximum: 10 }
         creators:
-          type: array
           items: { type: string, maxLength: 500 }
         country: { type: string, maxLength: 100 }
         poster_url: { type: string, format: uri, maxLength: 500 }
@@ -680,6 +750,20 @@ components:
         actor_id: { type: integer }
         name: { type: string }
         profile_url: { type: string, format: uri }
+
+    AggregateResponse:
+      type: object
+      required: [show_count, avg_rating, min_rating, max_rating]
+      properties:
+        show_count: { type: integer }
+        avg_rating: { type: number }
+        min_rating: { type: number }
+        max_rating: { type: number }
+        id: { type: integer }
+        name: { type: string }
+        year: { type: integer }
+        status: { type: string }
+        country: { type: string }
 
     ErrorResponse:
       type: object
