@@ -3,9 +3,9 @@
  */
 
 import { getPool } from '@/core/utilities/database';
-import { GenreResponse } from '@/types/responseTypes';
+import { GenreEndpointResponse, GenreResponse } from '@/types/responseTypes';
 
-export const getGenreList = async (): Promise<GenreResponse[]> => {
+export const getGenreList = async (): Promise<GenreEndpointResponse> => {
 
   const pool = getPool();
 
@@ -18,5 +18,8 @@ export const getGenreList = async (): Promise<GenreResponse[]> => {
     name: genre.name
   }));
   
-  return genres;
+  return {
+    count: genres.length,
+    data: genres
+  };
 };
