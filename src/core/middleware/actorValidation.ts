@@ -1,74 +1,60 @@
 import { Request, Response, NextFunction } from 'express';
+import { query, param, validationResult } from 'express-validator';
 
-export const validateActorQueries = (
-    request: Request,
-    response: Response,
-    next: NextFunction
-): void => {
-    const nameQuery = request.query.name as string | undefined;
-    
-    // Validate name query
-    if (nameQuery !== undefined) {
-        // Check if empty or only whitespace
-        if (nameQuery.trim() === '') {
-            response.status(400).json({ error: 'Name parameter cannot be empty' });
-            return;
-        }
-        // Check length (prevent extremely long queries)
-        if (nameQuery.length > 100) {
-            response.status(400).json({ error: 'Name parameter too long (max 100 characters)' });
-            return;
-        }
-    }
-
-    next();
-};
-
-export const validateActorId = (
-    request: Request,
-    response: Response,
-    next: NextFunction
-): void => {
-    const idPattern = /^\d+$/;
-    // check for bad params
-    if (!request.params.id || !idPattern.test(request.params.id)) {
+/**
+ * Middleware to handle validation errors
+ */
+const handleValidationErrors = (request: Request, response: Response, next: NextFunction): void => {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
         response.status(400).json({
-            error: 'Invalid ID format.',
-            details: 'ID must be numeric and not empty.'
+            success: false,
+            message: 'Validation failed',
+            errors: errors.array().map(err => ({
+                field: err.type === 'field' ? err.path : undefined,
+                message: err.msg
+            }))
         });
         return;
     }
     next();
 };
 
-export const validateActorRatingCount = (
-    request: Request,
-    response: Response,
-    next: NextFunction
-): void => {
-    const count = request.query.count as string | undefined;
-    const countPattern = /^\d+$/;
-    // check for bad params
-    if (count !== undefined) {
-        if (!countPattern.test(count)) {
-            response.status(400).json({
-                error: 'Invalid count data.',
-                details: 'Count must be numeric.'
-            });
-            return;
-        } else {
-            // check for bounds
-            const countParsed: number = parseInt(count);
+/**
+ * Validates actor query parameters
+ */
+export const validateActorQueries = [
+    query('name')
+        .optional()
+        .trim()
+        .notEmpty()
+        .withMessage('Name parameter cannot be empty')
+        .isLength({ max: 100 })
+        .withMessage('Name parameter too long (max 100 characters)'),
+    handleValidationErrors
+];
 
-            if (countParsed <= 0 || countParsed > 50) {
-                response.status(400).json({
-                    error: 'Invalid count data.',
-                    details: 'Count must be between 1 and 50 inclusive.'
-                });
-                return;
-            }
-        }
-    }
+/**
+ * Validates actor ID parameter
+ */
+export const validateActorId = [
+    param('id')
+        .notEmpty()
+        .withMessage('ID is required')
+        .isInt({ min: 1 })
+        .withMessage('ID must be a positive integer')
+        .toInt(),
+    handleValidationErrors
+];
 
-    next();
-};
+/**
+ * Validates actor rating count query parameter
+ */
+export const validateActorRatingCount = [
+    query('count')
+        .optional()
+        .isInt({ min: 1, max: 50 })
+        .withMessage('Count must be between 1 and 50 inclusive')
+        .toInt(),
+    handleValidationErrors
+];
