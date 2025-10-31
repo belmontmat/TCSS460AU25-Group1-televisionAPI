@@ -147,7 +147,7 @@ export const getShowByFilter = async (
   creators: string,
   name: string,
   page: number,
-  limit: number): Promise<ShowsFilterResponse | null> => {
+  limit: number): Promise<ShowsFilterResponse> => {
   const pool = getPool();
 
   const conditions = [];

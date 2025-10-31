@@ -1,59 +1,48 @@
 import { Request, Response, NextFunction } from 'express';
-import {
-    validateRequired,
-    validateString,
-    validateNotEmpty,
-    validateMaxLength,
-    validateUrl,
-    validateOptionalField,
-    sendValidationError,
-    runValidators,
-    sanitizeString
-} from '@/core/utilities/validate';
+import { body, validationResult } from 'express-validator';
 
-export const validateActorCreate = (
-    request: Request,
-    response: Response,
-    next: NextFunction
-) => {
-    const { name, profile_url } = request.body;
-    const MAX_NAME_LENGTH = 250;
-    const MAX_URL_LENGTH = 500;
-
-    // Validate required name field
-    const nameError = runValidators([
-        () => validateRequired(name, 'Name'),
-        () => validateString(name, 'Name'),
-        () => validateNotEmpty(name, 'Name'),
-        () => validateMaxLength(name, MAX_NAME_LENGTH, 'Name')
-    ]);
-
-    if (nameError) {
-        sendValidationError(response, nameError);
+/**
+ * Middleware to handle validation errors
+ */
+const handleValidationErrors = (request: Request, response: Response, next: NextFunction): void => {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+        response.status(400).json({
+            success: false,
+            message: 'Validation failed',
+            errors: errors.array().map(err => ({
+                field: err.type === 'field' ? err.path : undefined,
+                message: err.msg
+            }))
+        });
         return;
     }
-
-    // Validate optional profile_url field
-    const urlError = validateOptionalField(
-        profile_url,
-        'Profile URL',
-        [
-            (val) => validateString(val, 'Profile URL'),
-            (val) => val.trim() !== '' ? validateUrl(val, 'Profile URL') : null,
-            (val) => validateMaxLength(val, MAX_URL_LENGTH, 'Profile URL')
-        ]
-    );
-
-    if (urlError) {
-        sendValidationError(response, urlError);
-        return;
-    }
-
-    // Sanitize and normalize the data - remove white space
-    request.body.name = sanitizeString(name);
-    if (profile_url && typeof profile_url === 'string') {
-        request.body.profile_url = sanitizeString(profile_url);
-    }
-
     next();
 };
+
+const MAX_NAME_LENGTH = 250;
+const MAX_URL_LENGTH = 500;
+
+/**
+ * Validates actor creation request
+ */
+export const validateActorCreate = [
+    body('name')
+        .trim()
+        .notEmpty()
+        .withMessage('Name is required')
+        .isLength({ min: 1, max: MAX_NAME_LENGTH })
+        .withMessage(`Name must be between 1 and ${MAX_NAME_LENGTH} characters`),
+    
+    body('profile_url')
+        .optional({ values: 'falsy' })
+        .trim()
+        .notEmpty()
+        .withMessage('Profile URL cannot be empty if provided')
+        .isURL()
+        .withMessage('Profile URL must be a valid URL')
+        .isLength({ max: MAX_URL_LENGTH })
+        .withMessage(`Profile URL must be ${MAX_URL_LENGTH} characters or less`),
+    
+    handleValidationErrors
+];
