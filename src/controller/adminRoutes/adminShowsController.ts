@@ -347,7 +347,7 @@ export const deleteShow = async (request: Request, response: Response): Promise<
 
       if (existingShow.rows.length === 0) {
         await pool.query('ROLLBACK');
-        response.status(404).json({ error: 'Show not found' });
+        response.status(404).json({ success: false, error: 'Show not found' });
         return;
       }
 
@@ -360,7 +360,7 @@ export const deleteShow = async (request: Request, response: Response): Promise<
 
       await pool.query('COMMIT');
 
-      response.status(200).json({
+      response.status(204).json({
         message: 'Show deleted successfully',
         showId: showId
       });
