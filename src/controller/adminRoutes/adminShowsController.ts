@@ -274,7 +274,7 @@ export const updateShow = async (request: Request, response: Response): Promise<
 
       if (updateResult.rows.length === 0) {
         await pool.query('ROLLBACK');
-        response.status(404).json({ error: 'Show not found' });
+        response.status(404).json({ success: false, error: 'Show not found' });
         return;
       }
 
