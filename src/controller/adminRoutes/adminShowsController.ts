@@ -125,6 +125,8 @@ export const addShow = async (request: Request, response: Response): Promise<voi
         }
       }
 
+      const showCreators: string | undefined = showData.creators?.toString().replaceAll(',', ';');
+
       // Insert the show
       const showResult = await pool.query(
         `INSERT INTO tv_show (
@@ -151,7 +153,7 @@ export const addShow = async (request: Request, response: Response): Promise<voi
           showData.backdrop_url || null,
           networkId,
           showData.network_country || null,
-          showData.creators || null
+          showCreators || null
         ]
       );
 
