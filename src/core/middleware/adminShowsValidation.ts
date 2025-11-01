@@ -38,7 +38,7 @@ const VALID_STATUSES = [
 /**
  * Custom sanitizer to parse semicolon-separated strings into arrays
  */
-const parseSemicolonArray = (value: any): any => {
+const parseSemicolonArray = (value: string): string[] => {
     if (typeof value === 'string') {
         return value.split(';').map(item => item.trim()).filter(item => item !== '');
     }
