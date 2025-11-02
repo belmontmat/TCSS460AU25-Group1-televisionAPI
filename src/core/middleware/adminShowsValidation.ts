@@ -347,8 +347,8 @@ export const validateShowCreate = (
         creators,
         'Creators',
         [
-            (val) => validateString(val, 'Creators'),
-            (val) => validateMaxLength(val, MAX_CREATORS_LENGTH, 'Creators')
+            (val) => validateStringArray(val, 'Creators'),
+            (val) => validateMaxLength(val.toString(), MAX_CREATORS_LENGTH, 'Creators')
         ]
     );
 

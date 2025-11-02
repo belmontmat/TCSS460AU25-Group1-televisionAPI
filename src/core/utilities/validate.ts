@@ -2,6 +2,7 @@
 import { Response } from 'express';
 
 export interface ValidationError {
+    success: boolean;
     error: string;
     details: string;
 }
@@ -15,6 +16,7 @@ export const validateRequired = (
 ): ValidationError | null => {
     if (value === undefined || value === null) {
         return {
+            success: false,
             error: `${fieldName} is required`,
             details: `${fieldName} must be provided`
         };
@@ -31,6 +33,7 @@ export const validateString = (
 ): ValidationError | null => {
     if (typeof value !== 'string') {
         return {
+            success: false,
             error: `Invalid ${fieldName} format`,
             details: `${fieldName} must be a string`
         };
@@ -47,6 +50,7 @@ export const validateNotEmpty = (
 ): ValidationError | null => {
     if (value.trim() === '') {
         return {
+            success: false,
             error: `${fieldName} cannot be empty`,
             details: `${fieldName} must contain non-whitespace characters`
         };
@@ -64,6 +68,7 @@ export const validateMaxLength = (
 ): ValidationError | null => {
     if (value.length > maxLength) {
         return {
+            success: false,
             error: `${fieldName} too long`,
             details: `${fieldName} must be ${maxLength} characters or less`
         };
@@ -83,6 +88,7 @@ export const validateUrl = (
         return null;
     } catch (error) {
         return {
+            success: false,
             error: `Invalid ${fieldName}`,
             details: `${fieldName} must be a valid URL format - ${error}`
         };
@@ -153,6 +159,7 @@ export const validateInteger = (
 ): ValidationError | null => {
     if (!Number.isInteger(value)) {
         return {
+            success: false,
             error: `Invalid ${fieldName} format`,
             details: `${fieldName} must be an integer`
         };
@@ -170,6 +177,7 @@ export const validateMin = (
 ): ValidationError | null => {
     if (value < min) {
         return {
+            success: false,
             error: `${fieldName} too small`,
             details: `${fieldName} must be at least ${min}`
         };
@@ -187,6 +195,7 @@ export const validateDate = (
     const date = new Date(value);
     if (isNaN(date.getTime())) {
         return {
+            success: false,
             error: `Invalid ${fieldName}`,
             details: `${fieldName} must be a valid date format`
         };
@@ -203,6 +212,7 @@ export const validateArray = (
 ): ValidationError | null => {
     if (!Array.isArray(value)) {
         return {
+            success: false,
             error: `Invalid ${fieldName} format`,
             details: `${fieldName} must be an array`
         };
@@ -219,6 +229,7 @@ export const validateIntegerArray = (
 ): ValidationError | null => {
     if (!value.every((item) => Number.isInteger(item))) {
         return {
+            success: false,
             error: `Invalid ${fieldName} format`,
             details: `${fieldName} must contain only integers`
         };
@@ -236,6 +247,7 @@ export const validateEnum = <T>(
 ): ValidationError | null => {
     if (!allowedValues.includes(value)) {
         return {
+            success: false,
             error: `Invalid ${fieldName}`,
             details: `${fieldName} must be one of: ${allowedValues.join(', ')}`
         };
@@ -252,6 +264,7 @@ export const validateNotEmptyArray = (
 ): ValidationError | null => {
     if (value.length === 0) {
         return {
+            success: false,
             error: `${fieldName} cannot be empty`,
             details: `${fieldName} must contain at least one item`
         };
@@ -268,6 +281,7 @@ export const validateNumber = (
 ): ValidationError | null => {
     if (typeof value !== 'number' || isNaN(value)) {
         return {
+            success: false,
             error: `Invalid ${fieldName} format`,
             details: `${fieldName} must be a number`
         };
@@ -291,6 +305,7 @@ export const validateStringArray = (
 ): ValidationError | null => {
     if (!value.every((item) => typeof item === 'string' && item.trim() !== '')) {
         return {
+            success: false,
             error: `Invalid ${fieldName} format`,
             details: `${fieldName} must contain only non-empty strings`
         };
