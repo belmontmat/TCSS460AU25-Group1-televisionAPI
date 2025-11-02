@@ -9,6 +9,7 @@ export interface ShowSummary {
   tmdb_rating: number;
   popularity: number;
   poster_url: string;
+  overview: string;
 }
 
 export interface ShowDetail extends ShowSummary {
