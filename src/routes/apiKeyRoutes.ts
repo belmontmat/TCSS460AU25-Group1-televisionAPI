@@ -9,7 +9,7 @@
  */
 
 import { Router } from 'express';
-import { generateApiKeyController,} from '../controller/apiKeyController';
+import { generateApiKeyController } from '../controller/apiKeyController';
 import { validateGenerateApiKey } from '../core/middleware/apiKeyValidation';
 
 export const apiKeyRoutes = Router();
