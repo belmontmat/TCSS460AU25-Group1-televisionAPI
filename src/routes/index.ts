@@ -21,7 +21,7 @@ routes.get('/', (request, response) => {
         endpoints: {
             
         },
-        documentation: 'Visit the get/api-docs route!'
+        documentation: 'Visit the /api-docs route!'
     });
 });
 
