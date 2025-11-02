@@ -19,7 +19,8 @@ export const getShowList = async (page: number, limit: number): Promise<ShowsRes
         episodes: show.episodes,
         tmdb_rating: show.tmdb_rating,
         popularity: show.popularity,
-        poster_url: show.poster_url
+        poster_url: show.poster_url,
+        overview: show.overview
     }));
 
     return {
