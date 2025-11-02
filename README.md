@@ -16,6 +16,7 @@
 * [Alpha Sprint 1](#alpha-sprint-1)
 * [Beta Sprint 2](#beta-sprint-2-week-3---october-13---october-19)
 * [Beta Sprint 3](#beta-sprint-3-week-4---october-20---october-26)
+* [Production Sprint 4](#production-sprint-4-week-5---october-27---november-2)
 
 ---
 
@@ -64,7 +65,7 @@ This week we got our Express app and Postgres database hosted on Render: https:/
 * Mathew: Set up the /api-docs endpont and managed the swagger docs as the endpoint designs came together. Led during Sunday peer programing session. Scrum Master.
 * Preston: Got the API App and Express Router up. Helped during the peer programming session specifically with database initialization, SQL querries, controller/route design, and utilities.
 * Sean: Got the API and database hosted on Render. Helped during Sunday peer programming session specifically with postman tests.
-* Abdul: 
+* Abdul: absent.
 
 ## Meeting Summary
 ### Meeting 1
@@ -88,7 +89,7 @@ This week we added the rest of the routes from our design docs. During implement
 * Mathew: Implemented genres, shows, and stats routes. Refactored common code into utility functions.
 * Preston: Implemented actors and admin routes. Fixed database deficiencies
 * Sean: Implemented API-Keys, including updating the db.
-* Abdul: 
+* Abdul: absent.
 
 ## Meeting Summary
 Note: Due to the AWS/Canvas outage, we skipped our Monday morning meeting and did not reschedule due to time conflicts.
@@ -108,3 +109,36 @@ Knocked out merge conflicts and combined all our work
 ## Sprint Comments and Concerns
  * Render has a 30 day postgres limit so we are planning on swapping to supabase.
  * We had Claude write our tests, but some of the tests our out of date due to minor refinements in our API documentation that Claude didn't account for. These will have to be updated. We also noticed a few tests that don't pass which we are investigating.
+
+
+# Production Sprint 4 (Week 5 - October 27 - November 2)
+API web address: https://g1-tvapi.onrender.com/api-docs/
+Credentials API: https://g1-authcore-0fdbad45b289.herokuapp.com/
+
+This week we continued refining tests and fixes for the data API and got the credentialing API onto Heroku.
+
+## Contributions
+* Mathew: Implemented validation middleware for the authentication routes, refactored the data API code and secured our SQL queries. Fixed the statistics routes and corresponding documentation.
+* Preston: Set the API key middleware to function on all data routes, hosted credentials API and DB onto Heroku, refined Postman tests with cleanup functionality and repaired endpoints that were out of compliance with the API docs.
+* Sean: Implemented the credentials admin routes, created postman tests for the new shows routes from last sprint.
+* Abdul: absent.
+
+## Meeting Summary
+### Meeting 1
+2025-10-27
+
+Weekly scrum, review of this week's deliverables and assignments to contributors.
+
+### Meeting 2
+2025-10-30
+
+Discussed each other's status with refining tests - most ran out of tokens. Clarified requirements for the credentialing API.
+Discussed specifics for Heroku, middleware and admin routes.
+
+### Meeting 3
+2025-11-02
+
+Fixed placement of API key middleware, finished tests and ensured compliance with documentation.
+
+## Sprint Comments and Concerns
+Nothing to add.
