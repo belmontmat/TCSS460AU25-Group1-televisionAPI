@@ -17,7 +17,7 @@ routes.get('/', (request, response) => {
         endpoints: {
             
         },
-        documentation: 'Not available yet'
+        documentation: 'Visit the /api-docs route!'
     });
 });
 

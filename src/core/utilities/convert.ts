@@ -28,7 +28,7 @@ export const convertResponsesToShowDetail = (
         popularity: show.popularity,
         tmdb_rating: show.tmdb_rating,
         vote_count: show.vote_count,
-        creators: show.creators.split(';'),
+        creators: show.creators?.split(';') ?? [],  //Creators is sometimes null in database
         poster_url: show.poster_url,
         backdrop_url: show.backdrop_url,
         genres: genreResult.rows.map(row => ({
@@ -68,7 +68,8 @@ export const convertShowResponsesToShowSummary = (showResult: ShowResponse): Sho
         episodes: showResult.episodes,
         tmdb_rating: showResult.tmdb_rating,
         popularity: showResult.popularity,
-        poster_url: showResult.poster_url
+        poster_url: showResult.poster_url,
+        overview: showResult.overview,
     };
 };
 
@@ -86,6 +87,7 @@ export const convertShowDetailsToShowSummary = (show: ShowDetail | null): ShowSu
         episodes: show.episodes,
         tmdb_rating: show.tmdb_rating,
         popularity: show.popularity,
-        poster_url: show.poster_url
+        poster_url: show.poster_url,
+        overview: show.overview,
     };
 };

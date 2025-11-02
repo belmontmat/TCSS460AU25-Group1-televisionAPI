@@ -27,8 +27,8 @@ showRoutes.get('/filter', async(request, response) => {
         const network = request.query.network?.toString() || '';
         const studios = request.query.studios?.toString() || ''; // a comma-separated list of studio names
         const status = request.query.status?.toString() || '';
-        const minRating = parseFloat(request.query.minRating as string) || 0;
-        const maxRating = parseFloat(request.query.maxRating as string) || 10;
+        const minRating = parseFloat(request.query.min_rating as string) || 0;
+        const maxRating = parseFloat(request.query.max_rating as string) || 10;
         const startDate = request.query.startDate?.toString() || '1900-01-01';
         const endDate = (request.query.endDate?.toString() ?? new Date().toISOString().split('T')[0]) as string;
         const country = request.query.country?.toString() || '';
@@ -151,7 +151,7 @@ showRoutes.get('/:id', async(request, response) => {
         
         if (result === null) {
             return response.status(404).json({
-                error: 'No Shows Found with ID: ' + request.params.id
+                success:false, error: 'No Shows Found with ID: ' + request.params.id
             });
         }
         
