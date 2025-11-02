@@ -1,11 +1,11 @@
 {
 	"info": {
-		"_postman_id": "278c3ecf-7a05-4f97-b880-57b390d49d22",
-		"name": "TV Database System API Tests - Complete",
+		"_postman_id": "886d9024-e0d3-438d-9683-9ee649498949",
+		"name": "TV Database System API Tests - Complete Copy",
 		"description": "Comprehensive test suite for the TV Database API\n\nContributors: Preston Sia, Mathew Belmont, Sean Miller, Abdul Hassan",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "45398775",
-		"_collection_link": "https://preston-4684692.postman.co/workspace/Preston's-Workspace~ce3b4307-7a19-4b02-80ab-a279801f6c3d/collection/45398775-278c3ecf-7a05-4f97-b880-57b390d49d22?action=share&source=collection_link&creator=45398775"
+		"_collection_link": "https://preston-4684692.postman.co/workspace/Preston's-Workspace~ce3b4307-7a19-4b02-80ab-a279801f6c3d/collection/45398775-886d9024-e0d3-438d-9683-9ee649498949?action=share&source=collection_link&creator=45398775"
 	},
 	"item": [
 		{
@@ -56,6 +56,49 @@
 			"name": "Actors",
 			"item": [
 				{
+					"name": "Get Actors - No API Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Unauthorized error response\", function () {",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Unauthorized Actor\"\n}"
+						},
+						"url": "{{baseUrl}}/actors"
+					},
+					"response": []
+				},
+				{
 					"name": "Get All Actors - Default Pagination",
 					"event": [
 						{
@@ -95,13 +138,21 @@
 									"    pm.expect(pm.response.responseTime).to.be.below(3000);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/actors"
 					},
 					"response": []
@@ -132,13 +183,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/actors?name=Smith",
 							"host": [
@@ -154,6 +213,49 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Actor by ID - No API key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Unauthorized error response\", function () {",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Unauthorized Actor\"\n}"
+						},
+						"url": "{{baseUrl}}/actors/{{test_actor_id}}"
 					},
 					"response": []
 				},
@@ -185,13 +287,21 @@
 									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/actors/{{test_actor_id}}"
 					},
 					"response": []
@@ -213,14 +323,65 @@
 									"    pm.expect(jsonData).to.have.property('error');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/actors/999999999"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Show By Actor No API Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Unauthorized error response\", function () {",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Unauthorized Actor\"\n}"
+						},
+						"url": "{{baseUrl}}/actors/{{test_actor_id}}/shows"
 					},
 					"response": []
 				},
@@ -257,13 +418,21 @@
 									"    pm.expect(pm.response.responseTime).to.be.below(3000);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/actors/{{test_actor_id}}/shows"
 					},
 					"response": []
@@ -299,13 +468,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/actors/{{test_actor_id}}/ratings?count=5",
 							"host": [
@@ -338,15 +515,12 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Test status code",
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"// Parse response",
 									"const jsonData = pm.response.json();",
 									"",
-									"// Test response structure",
 									"pm.test(\"Response has required properties\", function () {",
 									"    pm.expect(jsonData).to.have.property('count');",
 									"    pm.expect(jsonData).to.have.property('page');",
@@ -354,67 +528,25 @@
 									"    pm.expect(jsonData).to.have.property('data');",
 									"});",
 									"",
-									"// Test data types",
-									"pm.test(\"Properties have correct data types\", function () {",
-									"    pm.expect(jsonData.count).to.be.a('number');",
-									"    pm.expect(jsonData.page).to.be.a('number');",
-									"    pm.expect(jsonData.limit).to.be.a('number');",
-									"    pm.expect(jsonData.data).to.be.an('array');",
-									"});",
-									"",
-									"// Test default pagination values",
-									"pm.test(\"Default pagination values are correct\", function () {",
-									"    pm.expect(jsonData.page).to.equal(1);",
-									"    pm.expect(jsonData.limit).to.equal(50);",
-									"});",
-									"",
-									"// Test data array length",
-									"pm.test(\"Data array length does not exceed limit\", function () {",
-									"    pm.expect(jsonData.data.length).to.be.at.most(jsonData.limit);",
-									"});",
-									"",
-									"// Test individual show structure",
 									"if (jsonData.data.length > 0) {",
-									"    pm.test(\"Show items have required fields\", function () {",
-									"        const show = jsonData.data[0];",
-									"        pm.expect(show).to.have.property('show_id');",
-									"        pm.expect(show).to.have.property('name');",
-									"        pm.expect(show).to.have.property('original_name');",
-									"        pm.expect(show).to.have.property('first_air_date');",
-									"        pm.expect(show).to.have.property('status');",
-									"        pm.expect(show).to.have.property('seasons');",
-									"        pm.expect(show).to.have.property('episodes');",
-									"        pm.expect(show).to.have.property('tmdb_rating');",
-									"        pm.expect(show).to.have.property('popularity');",
-									"        pm.expect(show).to.have.property('poster_url');",
-									"    });",
-									"    ",
-									"    pm.test(\"Show field types are correct\", function () {",
-									"        const show = jsonData.data[0];",
-									"        pm.expect(show.show_id).to.be.a('number');",
-									"        pm.expect(show.name).to.be.a('string');",
-									"        pm.expect(show.seasons).to.be.a('number');",
-									"        pm.expect(show.episodes).to.be.a('number');",
-									"        pm.expect(show.tmdb_rating).to.be.a('number');",
-									"        pm.expect(show.popularity).to.be.a('number');",
-									"    });",
-									"    ",
-									"    // Store first show ID for later tests",
 									"    pm.environment.set(\"test_show_id\", jsonData.data[0].show_id);",
-									"}",
-									"",
-									"// Test response time",
-									"pm.test(\"Response time is less than 3000ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(3000);",
-									"});"
+									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/shows"
 					},
 					"response": []
@@ -426,36 +558,32 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Test status code",
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
 									"const jsonData = pm.response.json();",
 									"",
-									"// Test custom pagination values",
-									"pm.test(\"Pagination reflects query parameters\", function () {",
+									"pm.test(\"Custom pagination values applied\", function () {",
 									"    pm.expect(jsonData.page).to.equal(2);",
 									"    pm.expect(jsonData.limit).to.equal(20);",
-									"});",
-									"",
-									"// Test data array length matches limit",
-									"pm.test(\"Data array length does not exceed requested limit\", function () {",
-									"    pm.expect(jsonData.data.length).to.be.at.most(20);",
-									"});",
-									"",
-									"// Test that page 2 has different data than page 1",
-									"pm.test(\"Response contains data array\", function () {",
-									"    pm.expect(jsonData.data).to.be.an('array');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/shows?page=2&limit=20",
 							"host": [
@@ -479,214 +607,25 @@
 					"response": []
 				},
 				{
-					"name": "Get All Shows - Maximum Limit",
+					"name": "Get Show by ID",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Test status code",
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
 									"const jsonData = pm.response.json();",
 									"",
-									"// Test maximum limit",
-									"pm.test(\"Maximum limit of 100 is respected\", function () {",
-									"    pm.expect(jsonData.limit).to.be.at.most(100);",
-									"    pm.expect(jsonData.data.length).to.be.at.most(100);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/shows?limit=100",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"shows"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "100"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Shows - Minimum Page",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"// Test status code",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"// Test minimum page value",
-									"pm.test(\"Page is at least 1\", function () {",
-									"    pm.expect(jsonData.page).to.be.at.least(1);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/shows?page=1&limit=10",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"shows"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "limit",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Show by ID - Valid",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"// Test status code",
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"// Test detailed show structure",
-									"pm.test(\"Show detail has all required fields\", function () {",
-									"    // Summary fields",
+									"pm.test(\"Show has required detail fields\", function () {",
 									"    pm.expect(jsonData).to.have.property('show_id');",
 									"    pm.expect(jsonData).to.have.property('name');",
-									"    pm.expect(jsonData).to.have.property('original_name');",
-									"    pm.expect(jsonData).to.have.property('first_air_date');",
-									"    pm.expect(jsonData).to.have.property('status');",
-									"    pm.expect(jsonData).to.have.property('seasons');",
-									"    pm.expect(jsonData).to.have.property('episodes');",
-									"    pm.expect(jsonData).to.have.property('tmdb_rating');",
-									"    pm.expect(jsonData).to.have.property('popularity');",
-									"    pm.expect(jsonData).to.have.property('poster_url');",
-									"    ",
-									"    // Detail-specific fields",
-									"    pm.expect(jsonData).to.have.property('last_air_date');",
 									"    pm.expect(jsonData).to.have.property('overview');",
-									"    pm.expect(jsonData).to.have.property('vote_count');",
-									"    pm.expect(jsonData).to.have.property('backdrop_url');",
 									"    pm.expect(jsonData).to.have.property('genres');",
-									"    pm.expect(jsonData).to.have.property('creators');",
-									"    pm.expect(jsonData).to.have.property('network');",
-									"    pm.expect(jsonData).to.have.property('companies');",
 									"    pm.expect(jsonData).to.have.property('actors');",
-									"});",
-									"",
-									"// Test field types",
-									"pm.test(\"Show detail fields have correct types\", function () {",
-									"    pm.expect(jsonData.show_id).to.be.a('number');",
-									"    pm.expect(jsonData.name).to.be.a('string');",
-									"    pm.expect(jsonData.overview).to.be.a('string');",
-									"    pm.expect(jsonData.vote_count).to.be.a('number');",
-									"    pm.expect(jsonData.genres).to.be.an('array');",
-									"    pm.expect(jsonData.creators).to.be.an('array');",
-									"    pm.expect(jsonData.network).to.be.an('object');",
-									"    pm.expect(jsonData.companies).to.be.an('array');",
-									"    pm.expect(jsonData.actors).to.be.an('array');",
-									"});",
-									"",
-									"// Test genres structure",
-									"if (jsonData.genres.length > 0) {",
-									"    pm.test(\"Genre objects have correct structure\", function () {",
-									"        const genre = jsonData.genres[0];",
-									"        pm.expect(genre).to.have.property('genre_id');",
-									"        pm.expect(genre).to.have.property('name');",
-									"        pm.expect(genre.genre_id).to.be.a('number');",
-									"        pm.expect(genre.name).to.be.a('string');",
-									"    });",
-									"}",
-									"",
-									"// Test actors structure",
-									"if (jsonData.actors.length > 0) {",
-									"    pm.test(\"Actor objects have correct structure\", function () {",
-									"        const actor = jsonData.actors[0];",
-									"        pm.expect(actor).to.have.property('actor_id');",
-									"        pm.expect(actor).to.have.property('name');",
-									"        pm.expect(actor).to.have.property('character');",
-									"        pm.expect(actor).to.have.property('profile_url');",
-									"        pm.expect(actor).to.have.property('order_num');",
-									"        pm.expect(actor.actor_id).to.be.a('number');",
-									"        pm.expect(actor.name).to.be.a('string');",
-									"        pm.expect(actor.order_num).to.be.a('number');",
-									"    });",
-									"}",
-									"",
-									"// Test networks structure",
-									"pm.test(\"Network objects have correct structure\", function () {",
-									"    const network = jsonData.network;",
-									"    pm.expect(network).to.have.property('network_id');",
-									"    pm.expect(network).to.have.property('name');",
-									"    pm.expect(network).to.have.property('logo');",
-									"    pm.expect(network).to.have.property('country');",
-									"});",
-									"",
-									"// Test rating range",
-									"pm.test(\"TMDB rating is within valid range\", function () {",
-									"    pm.expect(jsonData.tmdb_rating).to.be.at.least(0);",
-									"    pm.expect(jsonData.tmdb_rating).to.be.at.most(10);",
-									"});",
-									"",
-									"// Test positive counts",
-									"pm.test(\"Counts are non-negative\", function () {",
-									"    pm.expect(jsonData.seasons).to.be.at.least(0);",
-									"    pm.expect(jsonData.episodes).to.be.at.least(0);",
-									"    pm.expect(jsonData.vote_count).to.be.at.least(0);",
-									"});",
-									"",
-									"// Test response time",
-									"pm.test(\"Response time is less than 2000ms\", function () {",
-									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
 									"});"
-								],
-								"type": "text/javascript",
-								"packages": {},
-								"requests": {}
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -696,7 +635,13 @@
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/shows/{{test_show_id}}"
 					},
 					"response": []
@@ -708,60 +653,288 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Test status code",
 									"pm.test(\"Status code is 404\", function () {",
 									"    pm.response.to.have.status(404);",
 									"});",
 									"",
-									"// Test error response structure",
-									"pm.test(\"Error response has error property\", function () {",
-									"    const jsonData = pm.response.json();",
-									"    pm.expect(jsonData).to.have.property('error');",
-									"    pm.expect(jsonData.error).to.be.a('string');",
-									"});",
+									"const jsonData = pm.response.json();",
 									"",
-									"// Test content type",
-									"pm.test(\"Content-Type is application/json\", function () {",
-									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"pm.test(\"Error response structure\", function () {",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/shows/999999999"
 					},
 					"response": []
 				},
 				{
-					"name": "Get Show by ID - Invalid ID Format",
+					"name": "Get Show Summary by ID",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"// Test that invalid ID returns error",
-									"pm.test(\"Status code is 400 or 404\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([400, 404]);",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"// Test error response",
-									"pm.test(\"Response has error property\", function () {",
-									"    const jsonData = pm.response.json();",
-									"    pm.expect(jsonData).to.have.property('error');",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Summary has required fields\", function () {",
+									"    pm.expect(jsonData).to.have.property('show_id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('overview');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
-						"url": "{{baseUrl}}/shows/invalid_id"
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}/shows/{{test_show_id}}/summary"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Shows - By Genre",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Response has filter structure\", function () {",
+									"    pm.expect(jsonData).to.have.property('count');",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shows/filter?genres=18",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "genres",
+									"value": "18"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Shows - By Minimum Rating",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"All shows meet minimum rating\", function () {",
+									"    if (jsonData.data.length > 0) {",
+									"        jsonData.data.forEach(show => {",
+									"            pm.expect(show.tmdb_rating).to.be.at.least(8.0);",
+									"        });",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shows/filter?min_rating=8.0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "min_rating",
+									"value": "8.0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Shows - Multiple Filters",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Multiple filters applied successfully\", function () {",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shows/filter?genres=18&min_rating=7.5&network=HBO",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "genres",
+									"value": "18"
+								},
+								{
+									"key": "min_rating",
+									"value": "7.5"
+								},
+								{
+									"key": "network",
+									"value": "HBO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Random Shows",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/shows/random?limit=5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shows",
+								"random"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
 					},
 					"response": []
 				}
@@ -810,13 +983,64 @@
 									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}/genres"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Genres No API key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"",
+									"pm.test(\"Unauthorized error response\", function () {",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Unauthorized Actor\"\n}"
+						},
 						"url": "{{baseUrl}}/genres"
 					},
 					"response": []
@@ -863,13 +1087,21 @@
 									"    pm.expect(pm.response.responseTime).to.be.below(3000);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/stats/genres"
 					},
 					"response": []
@@ -900,13 +1132,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/stats/networks"
 					},
 					"response": []
@@ -937,13 +1177,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/stats/actors"
 					},
 					"response": []
@@ -981,13 +1229,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/stats/years"
 					},
 					"response": []
@@ -1025,13 +1281,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/stats/countries"
 					},
 					"response": []
@@ -1071,13 +1335,21 @@
 									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/stats/status"
 					},
 					"response": []
@@ -1108,13 +1380,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/stats/companies"
 					},
 					"response": []
@@ -1280,7 +1560,27 @@
 									"    pm.expect(jsonData.seasons).to.equal(2);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Store original show data before updating (optional)\r",
+									"// You'd need to first GET the show to store its current state\r",
+									"pm.environment.set('show_id_to_restore', pm.variables.get('created_show_id'));\r",
+									"// Store the original data as JSON string\r",
+									"pm.environment.set('original_show_data', JSON.stringify({\r",
+									"    \"name\": \"Test Show Creation\",\r",
+									"    \"seasons\": 1\r",
+									"}));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1663,13 +1963,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/shows?page=0",
 							"host": [
@@ -1706,13 +2014,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/shows?limit=500",
 							"host": [
@@ -1749,13 +2065,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/shows?page=-1",
 							"host": [
@@ -1790,13 +2114,21 @@
 									"    pm.expect(jsonData).to.have.property('error');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": "{{baseUrl}}/shows/invalid_id"
 					},
 					"response": []
@@ -1819,13 +2151,21 @@
 									"    });",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/shows/filter?min_rating=invalid",
 							"host": [
@@ -2030,6 +2370,171 @@
 									"    pm.expect(jsonData).to.have.property('error');",
 									"});"
 								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": "{{baseUrl}}/actors/not_a_number"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cleanup",
+			"item": [
+				{
+					"name": "Delete Created Test Show",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Check if we have a created show to clean up",
+									"const createdShowId = pm.environment.get('created_show_id');",
+									"",
+									"if (!createdShowId) {",
+									"    console.log('No created show to clean up');",
+									"    pm.execution.skipRequest();",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Accept both 204 (deleted) and 404 (already deleted) as success",
+									"pm.test('Cleanup successful', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([204, 404]);",
+									"});",
+									"",
+									"// Clear the environment variable",
+									"pm.environment.unset('created_show_id');",
+									"",
+									"if (pm.response.code === 204) {",
+									"    console.log('Test show successfully deleted');",
+									"} else if (pm.response.code === 404) {",
+									"    console.log('Test show was already deleted');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": "{{baseUrl}}/admin/shows/{{created_show_id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Restore Updated Show (if applicable)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Check if we have original show data to restore",
+									"const originalShowData = pm.environment.get('original_show_data');",
+									"const showIdToRestore = pm.environment.get('show_id_to_restore');",
+									"",
+									"if (!originalShowData || !showIdToRestore) {",
+									"    console.log('No show data to restore');",
+									"    pm.execution.skipRequest();",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Show restoration successful or show not found', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+									"});",
+									"",
+									"// Clear the environment variables",
+									"pm.environment.unset('original_show_data');",
+									"pm.environment.unset('show_id_to_restore');",
+									"",
+									"if (pm.response.code === 200) {",
+									"    console.log('Show successfully restored to original state');",
+									"} else if (pm.response.code === 404) {",
+									"    console.log('Show no longer exists, restoration skipped');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{original_show_data}}"
+						},
+						"url": "{{baseUrl}}/admin/shows/{{show_id_to_restore}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Clear All Test Environment Variables",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Clear all test-related environment variables",
+									"const varsToClean = [",
+									"    'created_show_id',",
+									"    'original_show_data',",
+									"    'show_id_to_restore',",
+									"    'test_show_id'",
+									"];",
+									"",
+									"varsToClean.forEach(varName => {",
+									"    if (pm.environment.has(varName)) {",
+									"        pm.environment.unset(varName);",
+									"        console.log(`Cleared variable: ${varName}`);",
+									"    }",
+									"});",
+									"",
+									"pm.test('Environment cleanup complete', function () {",
+									"    pm.expect(true).to.be.true;",
+									"});",
+									"",
+									"console.log('All test environment variables cleared');"
+								],
 								"type": "text/javascript"
 							}
 						}
@@ -2037,7 +2542,96 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{baseUrl}}/actors/not_a_number"
+						"url": "https://postman-echo.com/get"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Created Test Actor",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Check if we have a created actor to clean up",
+									"const createdActorId = pm.environment.get('created_actor_id');",
+									"",
+									"if (!createdActorId) {",
+									"    console.log('No created actor to clean up');",
+									"    pm.execution.skipRequest();",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Accept both 204 (deleted) and 404 (already deleted) as success",
+									"pm.test('Cleanup successful', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([204, 404]);",
+									"});",
+									"",
+									"// Clear the environment variable",
+									"pm.environment.unset('created_actor_id');",
+									"",
+									"if (pm.response.code === 204) {",
+									"    console.log('Test actor successfully deleted');",
+									"} else if (pm.response.code === 404) {",
+									"    console.log('Test actor was already deleted');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-API-Key",
+								"value": "{{api_key}}"
+							}
+						],
+						"url": "{{baseUrl}}/admin/actors/{{created_actor_id}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Clear All Test Environment Variables",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Clear all test-related environment variables",
+									"const varsToClean = [",
+									"    'created_actor_id',",
+									"    'test_actor_id'",
+									"];",
+									"",
+									"varsToClean.forEach(varName => {",
+									"    if (pm.environment.has(varName)) {",
+									"        pm.environment.unset(varName);",
+									"        console.log(`Cleared variable: ${varName}`);",
+									"    }",
+									"});",
+									"",
+									"pm.test('Environment cleanup complete', function () {",
+									"    pm.expect(true).to.be.true;",
+									"});",
+									"",
+									"console.log('All test environment variables cleared');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "https://postman-echo.com/get"
 					},
 					"response": []
 				}
