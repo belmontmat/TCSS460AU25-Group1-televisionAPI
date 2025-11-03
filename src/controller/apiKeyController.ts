@@ -79,7 +79,7 @@ export const generateApiKeyController = async (request: Request, response: Respo
         sendSuccess(
             response,
             responseData,
-            "API key generated successfully - save this key, it won't be shown again!",
+            'API key generated successfully - save this key, it won\'t be shown again!',
             201
         );
 
@@ -88,7 +88,7 @@ export const generateApiKeyController = async (request: Request, response: Respo
         sendError(
             response,
             500,
-            "Failed to generate API key - please try again",
+            'Failed to generate API key - please try again',
             ErrorCodes.SRVR_INTERNAL_ERROR
         );
     }

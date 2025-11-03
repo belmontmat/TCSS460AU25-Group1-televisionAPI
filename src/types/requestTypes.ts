@@ -40,8 +40,8 @@ export interface FilterQuery extends PaginationQuery {
     network?: string;
     studios?: string;
     status?: string;
-    minRating?: number;
-    maxRating?: number;
+    min_rating?: number;
+    max_rating?: number;
     startDate: string;  // Always has default value '1900-01-01'
     endDate: string;    // Always has default value (today's date)
     country?: string;

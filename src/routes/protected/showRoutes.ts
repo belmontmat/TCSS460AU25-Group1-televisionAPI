@@ -40,8 +40,8 @@ showRoutes.get('/filter', validateFilter, async (request: Request<{}, {}, {}, Fi
         const network = request.query.network || '';
         const studios = request.query.studios || '';
         const status = request.query.status || '';
-        const minRating = request.query.minRating || 0;
-        const maxRating = request.query.maxRating || 10;
+        const minRating = request.query.min_rating || 0;
+        const maxRating = request.query.max_rating || 10;
         const startDate = request.query.startDate;  // Always has value from validator
         const endDate = request.query.endDate;      // Always has value from validator
         const country = request.query.country || '';
@@ -143,7 +143,7 @@ showRoutes.get('/:id', validateShowId, async (request: Request<{ id: string }>, 
 
         if (result === null) {
             return response.status(404).json({
-                error: 'No Shows Found with ID: ' + id
+                error: 'No Shows Found with ID: ' + request.params.id
             });
         }
 

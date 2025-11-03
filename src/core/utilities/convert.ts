@@ -69,7 +69,7 @@ export const convertShowResponsesToShowSummary = (showResult: ShowResponse): Sho
         tmdb_rating: showResult.tmdb_rating,
         popularity: showResult.popularity,
         poster_url: showResult.poster_url,
-        overview: showResult.overview,
+        overview: showResult.overview
     };
 };
 
@@ -88,6 +88,6 @@ export const convertShowDetailsToShowSummary = (show: ShowDetail | null): ShowSu
         tmdb_rating: show.tmdb_rating,
         popularity: show.popularity,
         poster_url: show.poster_url,
-        overview: show.overview,
+        overview: show.overview
     };
 };
