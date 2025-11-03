@@ -84,7 +84,6 @@ export interface ErrorResponse {
  * Used by express-validator middleware for validation failures
  */
 export interface ValidationErrorResponse {
-    success: false;
     message: string;
     errors: Array<{
         field?: string;

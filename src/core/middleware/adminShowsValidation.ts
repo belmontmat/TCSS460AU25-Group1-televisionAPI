@@ -8,7 +8,6 @@ const handleValidationErrors = (request: Request, response: Response, next: Next
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
         response.status(400).json({
-            success: false,
             message: 'Validation failed',
             errors: errors.array().map(err => ({
                 field: err.type === 'field' ? err.path : undefined,
@@ -118,8 +117,8 @@ export const validateShowCreate = [
     // Optional tmdb_rating
     body('tmdb_rating')
         .optional({ values: 'falsy' })
-        .isFloat({ min: 0 })
-        .withMessage('TMDb Rating must be a number of 0 or greater')
+        .isFloat({ min: 0, max: 10 })
+        .withMessage('TMDb Rating must be a number between 0 and 10')
         .toFloat(),
     
     // Optional vote_count
@@ -303,8 +302,8 @@ export const validateShowUpdate = [
     // Optional tmdb_rating
     body('tmdb_rating')
         .optional({ values: 'falsy' })
-        .isFloat({ min: 0 })
-        .withMessage('TMDb Rating must be a number of 0 or greater')
+        .isFloat({ min: 0, max: 10 })
+        .withMessage('TMDb Rating must be a number between 0 and 10')
         .toFloat(),
     
     // Optional vote_count

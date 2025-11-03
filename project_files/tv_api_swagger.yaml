@@ -164,6 +164,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /shows/random:
     get:
@@ -183,6 +185,8 @@ paths:
                 items: { $ref: '#/components/schemas/ShowSummary' }
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /shows/{id}:
     get:
@@ -202,10 +206,14 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/ShowDetail' }
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /shows/{id}/summary:
     get:
@@ -233,8 +241,14 @@ paths:
                   status: { type: string }
                   tmdb_rating: { type: number }
                   overview: { type: string }
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /genres:
     get:
@@ -337,6 +351,10 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /actors/{id}/ratings:
     get:
@@ -365,8 +383,14 @@ paths:
                   actor: { type: string }
                   count: { type: integer }
                   shows: { type: array, items: { $ref: '#/components/schemas/ShowSummary' } }
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /stats/genres:
     get:
@@ -397,6 +421,8 @@ paths:
                   max_rating: 9.5
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /stats/networks:
     get:
@@ -425,6 +451,8 @@ paths:
                   max_rating: 9.3
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /stats/actors:
     get:
@@ -455,6 +483,8 @@ paths:
                   max_rating: 9.5
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /stats/years:
     get:
@@ -483,6 +513,8 @@ paths:
                   max_rating: 9.4
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /stats/countries:
     get:
@@ -511,6 +543,8 @@ paths:
                   max_rating: 9.6
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /stats/status:
     get:
@@ -539,6 +573,8 @@ paths:
                   max_rating: 9.5
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /stats/companies:
     get:
@@ -567,6 +603,8 @@ paths:
                   max_rating: 9.3
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /admin/shows:
     post:
@@ -840,9 +878,8 @@ components:
 
     ErrorResponse:
       type: object
-      required: [success, message]
+      required: [message]
       properties:
-        success: { type: boolean }
         message: { type: string }
         errorCode: { type: string }
         timestamp: { type: string, format: date-time }
@@ -858,7 +895,7 @@ components:
             invalidInput:
               summary: Invalid input format
               value:
-                success: false
+                
                 message: "Invalid format: missing or malformed fields"
     Unauthorized:
       description: Unauthorized - missing or invalid API key or credentials
@@ -870,7 +907,7 @@ components:
             missingApiKey:
               summary: Missing API key
               value:
-                success: false
+                
                 message: "Unauthorized - missing or invalid API key"
     Forbidden:
       description: Forbidden - authenticated but insufficient permissions
@@ -882,7 +919,7 @@ components:
             noPermission:
               summary: No permission
               value:
-                success: false
+                
                 message: "Forbidden - insufficient permissions"
     NotFound:
       description: Resource not found
@@ -894,7 +931,7 @@ components:
             resourceMissing:
               summary: Resource missing
               value:
-                success: false
+                
                 message: "Not Found - requested resource does not exist"
     ServerError:
       description: Internal server error
@@ -906,5 +943,5 @@ components:
             serverFailure:
               summary: Server failure
               value:
-                success: false
+                
                 message: "Internal Server Error - unexpected error occurred"

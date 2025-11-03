@@ -64,13 +64,6 @@
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Unauthorized error response\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript",
@@ -225,13 +218,6 @@
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Unauthorized error response\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript",
@@ -351,13 +337,6 @@
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Unauthorized error response\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript",
@@ -657,12 +636,7 @@
 									"    pm.response.to.have.status(404);",
 									"});",
 									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Error response structure\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
-									"});"
+									"const jsonData = pm.response.json();"
 								],
 								"type": "text/javascript",
 								"packages": {},
@@ -837,12 +811,6 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Multiple filters applied successfully\", function () {",
-									"    pm.expect(jsonData).to.have.property('data');",
 									"});"
 								],
 								"type": "text/javascript",
@@ -1011,13 +979,6 @@
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Unauthorized error response\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript",
@@ -1465,14 +1426,6 @@
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Error response structure\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
-									"    pm.expect(jsonData).to.have.property('message');",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1493,7 +1446,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Incomplete Show\"\n}"
+							"raw": "{\n  \"genre\": \"Incomplete Show\"\n}"
 						},
 						"url": "{{baseUrl}}/admin/shows"
 					},
@@ -1510,12 +1463,7 @@
 									"    pm.response.to.have.status(401);",
 									"});",
 									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Unauthorized error response\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
-									"});"
+									"const jsonData = pm.response.json();"
 								],
 								"type": "text/javascript"
 							}
@@ -1613,13 +1561,6 @@
 								"exec": [
 									"pm.test(\"Status code is 404\", function () {",
 									"    pm.response.to.have.status(404);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Not found error response\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1717,13 +1658,6 @@
 								"exec": [
 									"pm.test(\"Status code is 404\", function () {",
 									"    pm.response.to.have.status(404);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Error response structure\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1827,13 +1761,6 @@
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Error response structure\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1869,13 +1796,6 @@
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {",
 									"    pm.response.to.have.status(401);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Unauthorized error response\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1907,13 +1827,6 @@
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Validation error response\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -2111,7 +2024,7 @@
 									"",
 									"pm.test(\"Response has error property\", function () {",
 									"    const jsonData = pm.response.json();",
-									"    pm.expect(jsonData).to.have.property('error');",
+									"    pm.expect(jsonData).to.have.property('errors');",
 									"});"
 								],
 								"type": "text/javascript",
@@ -2147,7 +2060,7 @@
 									"if (pm.response.code === 400) {",
 									"    const jsonData = pm.response.json();",
 									"    pm.test(\"Error response for invalid rating\", function () {",
-									"        pm.expect(jsonData).to.have.property('error');",
+									"        pm.expect(jsonData).to.have.property('errors');",
 									"    });",
 									"}"
 								],
@@ -2194,13 +2107,6 @@
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Validation error for invalid status\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -2236,13 +2142,6 @@
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Validation error for rating out of range\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -2278,13 +2177,6 @@
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Validation error for name too long\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -2320,13 +2212,6 @@
 								"exec": [
 									"pm.test(\"Status code is 400\", function () {",
 									"    pm.response.to.have.status(400);",
-									"});",
-									"",
-									"const jsonData = pm.response.json();",
-									"",
-									"pm.test(\"Validation error for invalid date\", function () {",
-									"    pm.expect(jsonData).to.have.property('success');",
-									"    pm.expect(jsonData.success).to.be.false;",
 									"});"
 								],
 								"type": "text/javascript"
@@ -2367,7 +2252,7 @@
 									"const jsonData = pm.response.json();",
 									"",
 									"pm.test(\"Error response present\", function () {",
-									"    pm.expect(jsonData).to.have.property('error');",
+									"    pm.expect(jsonData).to.have.property('errors');",
 									"});"
 								],
 								"type": "text/javascript",

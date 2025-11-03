@@ -108,13 +108,13 @@ export const validateFilter = [
         .trim()
         .isString()
         .withMessage('Status must be a string'),
-    query('minRating')
+    query('min_rating')
         .optional()
         .isFloat({ min: 0, max: 10 })
         .withMessage('Min rating must be a number between 0 and 10')
         .toFloat()
         .default(0),
-    query('maxRating')
+    query('max_rating')
         .optional()
         .isFloat({ min: 0, max: 10 })
         .withMessage('Max rating must be a number between 0 and 10')

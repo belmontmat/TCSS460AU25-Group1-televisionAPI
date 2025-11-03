@@ -50,7 +50,6 @@ showRoutes.get('/filter', validateFilter, async (request: Request<{}, {}, {}, Fi
 
         const page = request.query.page || 1;
         const limit = request.query.limit || 50;
-
         const result = await getShowByFilter(
             actors, genres, network, studios, status,
             minRating, maxRating, startDate, endDate,
