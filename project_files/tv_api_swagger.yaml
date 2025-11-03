@@ -884,19 +884,41 @@ components:
         errorCode: { type: string }
         timestamp: { type: string, format: date-time }
 
+    ValidationErrorResponse:
+      type: object
+      required: [message, errors]
+      properties:
+        message: { type: string }
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field: { type: string }
+              message: { type: string }
+
   responses:
     BadRequest:
       description: Bad request - validation failed or invalid parameters
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/ValidationErrorResponse'
           examples:
             invalidInput:
               summary: Invalid input format
               value:
                 
                 message: "Invalid format: missing or malformed fields"
+                errors:
+                  - field: "name"
+                    message: "Name is required and must be a non-empty string"
+                  - field: "id"
+                    message: "ID must be a positive integer"
+                  - field: "first_air_date"
+                    message: "First air date must be a valid date"
+                  - field: "tmdb_rating"
+                    message: "TMDB rating must be between 0 and 10"
     Unauthorized:
       description: Unauthorized - missing or invalid API key or credentials
       content:
