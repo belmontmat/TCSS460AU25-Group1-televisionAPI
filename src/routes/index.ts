@@ -6,7 +6,7 @@ import {Router} from 'express';
 import protectedRoutes from './protected';
 import { apiKeyRoutes } from './apiKeyRoutes';
 
-const routes = Router();            // instantiate Router object for export/use
+const routes = Router();
 
 routes.get('/', (request, response) => {
     response.json({
@@ -15,9 +15,14 @@ routes.get('/', (request, response) => {
         version: '0.0.1',
         timestamp: new Date().toISOString(),
         endpoints: {
-            
-        },
-        documentation: 'Visit the /api-docs route!'
+            shows: '/shows - TV show listings and details',
+            actors: '/actors - Actor information',
+            genres: '/genres - Genre listings',
+            stats: '/stats - Statistical aggregations',
+            apiKey: '/api-key - API key management',
+            admin: '/admin - Protected admin endpoints',
+            documentation: '/api-docs - API documentation (Swagger UI)'
+        }
     });
 });
 

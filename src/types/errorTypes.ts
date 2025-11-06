@@ -68,3 +68,31 @@ export const ErrorCodes = {
  * };
  */
 export type ErrorCode = typeof ErrorCodes[keyof typeof ErrorCodes];
+
+/**
+ * Standard error response interface for API endpoints
+ * Used for simple error responses with optional error code
+ */
+export interface ErrorResponse {
+    error: string;
+    code?: ErrorCode;
+    details?: string;
+}
+
+/**
+ * Validation error response interface
+ * Used by express-validator middleware for validation failures
+ */
+export interface ValidationErrorResponse {
+    message: string;
+    errors: Array<{
+        field?: string;
+        message: string;
+    }>;
+}
+
+/**
+ * Union type for all possible error responses
+ * Can be used in Response type declarations for endpoints that may return errors
+ */
+export type ApiErrorResponse = ErrorResponse | ValidationErrorResponse;
