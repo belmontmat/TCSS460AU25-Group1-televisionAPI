@@ -65,7 +65,7 @@ This week we got our Express app and Postgres database hosted on Render: https:/
 * Mathew: Set up the /api-docs endpont and managed the swagger docs as the endpoint designs came together. Led during Sunday peer programing session. Scrum Master.
 * Preston: Got the API App and Express Router up. Helped during the peer programming session specifically with database initialization, SQL querries, controller/route design, and utilities.
 * Sean: Got the API and database hosted on Render. Helped during Sunday peer programming session specifically with postman tests.
-* Abdul: absent.
+* Abdul: No contribution
 
 ## Meeting Summary
 ### Meeting 1
@@ -89,7 +89,7 @@ This week we added the rest of the routes from our design docs. During implement
 * Mathew: Implemented genres, shows, and stats routes. Refactored common code into utility functions.
 * Preston: Implemented actors and admin routes. Fixed database deficiencies
 * Sean: Implemented API-Keys, including updating the db.
-* Abdul: absent.
+* Abdul: No contribution
 
 ## Meeting Summary
 Note: Due to the AWS/Canvas outage, we skipped our Monday morning meeting and did not reschedule due to time conflicts.
@@ -121,7 +121,7 @@ This week we continued refining tests and fixes for the data API and got the cre
 * Mathew: Implemented validation middleware for the authentication routes, refactored the data API code and secured our SQL queries. Fixed the statistics routes and corresponding documentation.
 * Preston: Set the API key middleware to function on all data routes, hosted credentials API and DB onto Heroku, refined Postman tests with cleanup functionality and repaired endpoints that were out of compliance with the API docs.
 * Sean: Implemented the credentials admin routes, created postman tests for the new shows routes from last sprint.
-* Abdul: absent.
+* Abdul: No contribution
 
 ## Meeting Summary
 ### Meeting 1
