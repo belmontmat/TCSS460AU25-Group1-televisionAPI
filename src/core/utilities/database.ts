@@ -22,18 +22,14 @@ const createDatabaseConfig = (): PoolConfig => {
 
     if (nodeEnv === 'production') {
         return {
-            connectionString: getEnvVar('DATABASE_URL'),
+            connectionString: getEnvVar('SUPABASE_CONNECTION_STRING'),
             ssl: { rejectUnauthorized: false }
         };
     }
 
     return {
-        host: getEnvVar('DB_HOST', 'localhost'),
-        port: parseInt(getEnvVar('DB_PORT', '5432')),
-        user: getEnvVar('DB_USER', 'postgres'),
-        password: getEnvVar('DB_PASSWORD', 'password'),
-        database: getEnvVar('DB_NAME', 'tv_db'),
-        max: 20,
+        connectionString: getEnvVar('SUPABASE_CONNECTION_STRING'),
+        max: 15,
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 2000,
         ssl: {

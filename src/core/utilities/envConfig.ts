@@ -119,11 +119,7 @@ export const isProduction = (): boolean => {
  */
 export const validateEnv = (): void => {
     const requiredVars = [
-        'DB_HOST',
-        'DB_PORT',
-        'DB_USER',
-        'DB_PASSWORD',
-        'DB_NAME'
+        'SUPABASE_CONNECTION_STRING'
     ];
 
     const missing = requiredVars.filter(varName => {
