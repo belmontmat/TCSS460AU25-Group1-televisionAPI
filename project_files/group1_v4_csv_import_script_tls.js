@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 const Papa = require('papaparse');
 
 // Supabase Database configuration using connection string
-const connectionString = "postgresql://postgres.wbhtozdbttgakmihqkfh:SFPX0g1v0fl8xXNn@aws-1-us-east-1.pooler.supabase.com:6543/postgres";
+const connectionString = "[PUT STRING HERE]";
 
 // Pool with max 15 connections
 const pool = new Pool({
