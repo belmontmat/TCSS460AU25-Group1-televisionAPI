@@ -248,6 +248,17 @@ if (creators) {
       query += '\nWHERE ' + conditions.join(' AND ');
   }
 
+  const countQuery = `
+    SELECT COUNT(DISTINCT s.show_id) as total
+    FROM tv_show s
+    ${uniqueJoins.join('\n')}
+    ${conditions.length > 0 ? '\nWHERE ' + conditions.join(' AND ') : ''}
+`;
+
+// Execute count query with the same values (excluding limit/offset)
+const countResult = await pool.query(countQuery, values);
+const totalCount = parseInt(countResult.rows[0].total);
+
   query += `\nORDER BY s.show_id
   LIMIT $${paramCount++} OFFSET $${paramCount++}`;
 
@@ -260,7 +271,7 @@ if (creators) {
 
 
   return {
-      count: result.rowCount || 0,
+      count: totalCount || 0,
       page,
       limit,
       filters: {
