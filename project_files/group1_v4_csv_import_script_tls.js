@@ -1,24 +1,24 @@
-import { Pool } from 'pg';
-import fs from 'fs';
-import Papa from 'papaparse';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
+const fs = require('fs');
+const { Pool } = require('pg');
+const Papa = require('papaparse');
 
 // Supabase Database configuration using connection string
-// You can find this in: Project Settings → Database → Connection string (URI)
-const connectionString = process.env.SUPABASE_CONNECTION_STRING || 
-  'postgresql://postgres.xxxxxxxxxxxxx:[YOUR-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres';
+const connectionString = "postgresql://postgres.wbhtozdbttgakmihqkfh:SFPX0g1v0fl8xXNn@aws-1-us-east-1.pooler.supabase.com:6543/postgres";
 
-const pool = new Pool ({
+// Pool with max 15 connections
+const pool = new Pool({
   connectionString: connectionString,
+  max: 15,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 });
 
-// File path to your CSV (Run this script from the project root)
-const CSV_FILE_PATH = './project_files/tv_last1years.csv';
+// File path to your CSV
+const CSV_FILE_PATH = './tv_last1years.csv';
 
-// Process a single show
+// Concurrency limit (how many shows to process at once)
+const CONCURRENCY = 15;
+
 async function processShow(show, index, total) {
   const client = await pool.connect();
   
@@ -177,35 +177,43 @@ async function processShow(show, index, total) {
       const profileUrl = show[`Actor ${actorNum} Profile URL`];
 
       if (actorName && actorName.trim()) {
-        // Insert actor if not exists
-        const actorResult = await client.query(
-          `INSERT INTO actors (name, profile_url)
-           VALUES ($1, $2)
-           ON CONFLICT DO NOTHING
-           RETURNING actor_id`,
-          [actorName.trim(), profileUrl || null]
+        // Check if actor already exists
+        const existingActor = await client.query(
+          'SELECT actor_id, profile_url FROM actors WHERE name = $1',
+          [actorName.trim()]
         );
 
         let actorId;
-        if (actorResult.rows.length > 0) {
-          actorId = actorResult.rows[0].actor_id;
-        } else {
-          const existingActor = await client.query(
-            'SELECT actor_id FROM actors WHERE name = $1',
-            [actorName.trim()]
-          );
+        if (existingActor.rows.length > 0) {
+          // Actor exists, use existing actor_id
           actorId = existingActor.rows[0].actor_id;
+          
+          // Update profile_url if it was NULL and we now have a value
+          if (!existingActor.rows[0].profile_url && profileUrl) {
+            await client.query(
+              'UPDATE actors SET profile_url = $1 WHERE actor_id = $2',
+              [profileUrl, actorId]
+            );
+          }
+        } else {
+          // Actor doesn't exist, insert new
+          const actorResult = await client.query(
+            `INSERT INTO actors (name, profile_url)
+             VALUES ($1, $2)
+             RETURNING actor_id`,
+            [actorName.trim(), profileUrl || null]
+          );
+          actorId = actorResult.rows[0].actor_id;
         }
 
         // Link actor to show with character
-        if (characterName && characterName.trim()) {
-          await client.query(
-            `INSERT INTO characters (show_id, actor_id, name, order_num)
-             VALUES ($1, $2, $3, $4)
-             ON CONFLICT DO NOTHING`,
-            [showId, actorId, characterName.trim(), actorNum]
-          );
-        }
+        const finalCharacterName = (characterName && characterName.trim()) ? characterName.trim() : 'Unknown';
+        await client.query(
+          `INSERT INTO characters (show_id, actor_id, name, order_num)
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT DO NOTHING`,
+          [showId, actorId, finalCharacterName, actorNum]
+        );
       }
     }
 
@@ -222,67 +230,70 @@ async function processShow(show, index, total) {
   }
 }
 
-// Batch processing with concurrency limit
-async function processBatch(shows, batchSize = 15) {
-  const results = [];
-  
-  for (let i = 0; i < shows.length; i += batchSize) {
-    const batch = shows.slice(i, i + batchSize);
-    console.log(`\n--- Processing batch ${Math.floor(i / batchSize) + 1} (shows ${i + 1}-${Math.min(i + batchSize, shows.length)}) ---`);
-    
-    const batchPromises = batch.map((show, index) => 
-      processShow(show, i + index, shows.length)
-    );
-    
-    const batchResults = await Promise.all(batchPromises);
-    results.push(...batchResults);
-    
-    console.log(`Batch complete. Waiting briefly before next batch...`);
-    await new Promise(resolve => setTimeout(resolve, 100)); // Brief pause between batches
-  }
-  
-  return results;
-}
-
 async function importTVShows() {
+  const startTime = Date.now();
+  
   try {
-    console.log('Connected to Supabase database pool (max 15 connections)');
+    console.log('Reading CSV file...');
 
     // Read and parse CSV file
     const fileContent = fs.readFileSync(CSV_FILE_PATH, 'utf8');
     const parseResult = Papa.parse(fileContent, {
       header: true,
       skipEmptyLines: true,
-      dynamicTyping: false // Keep everything as strings initially
+      dynamicTyping: false
     });
 
     const shows = parseResult.data;
     console.log(`Found ${shows.length} shows to import`);
-    console.log(`Will process in batches of 15 (parallel processing)\n`);
+    console.log(`Using ${CONCURRENCY} parallel connections\n`);
 
-    const startTime = Date.now();
-    
-    // Process all shows in batches of 15
-    const results = await processBatch(shows, 15);
-    
+    const results = {
+      success: 0,
+      failed: 0,
+      errors: []
+    };
+
+    // Process shows in batches of CONCURRENCY
+    for (let i = 0; i < shows.length; i += CONCURRENCY) {
+      const batch = shows.slice(i, i + CONCURRENCY);
+      const batchNum = Math.floor(i / CONCURRENCY) + 1;
+      const totalBatches = Math.ceil(shows.length / CONCURRENCY);
+      
+      console.log(`\n--- Batch ${batchNum}/${totalBatches} (shows ${i + 1}-${Math.min(i + CONCURRENCY, shows.length)}) ---`);
+      
+      // Process all shows in this batch concurrently
+      const batchResults = await Promise.all(
+        batch.map((show, idx) => processShow(show, i + idx, shows.length))
+      );
+
+      // Collect results
+      batchResults.forEach(result => {
+        if (result.success) {
+          results.success++;
+        } else {
+          results.failed++;
+          results.errors.push({ show: result.show, error: result.error });
+        }
+      });
+      
+      console.log(`Batch ${batchNum} complete: ${batchResults.filter(r => r.success).length}/${batch.length} succeeded`);
+    }
+
     const endTime = Date.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
 
-    // Calculate statistics
-    const successful = results.filter(r => r.success).length;
-    const failed = results.filter(r => !r.success).length;
-
     console.log('\n=== Import Complete ===');
     console.log(`Total shows processed: ${shows.length}`);
-    console.log(`Successful: ${successful}`);
-    console.log(`Failed: ${failed}`);
+    console.log(`Successfully imported: ${results.success}`);
+    console.log(`Failed: ${results.failed}`);
     console.log(`Duration: ${duration} seconds`);
     console.log(`Average: ${(shows.length / duration).toFixed(2)} shows/second`);
 
-    if (failed > 0) {
+    if (results.errors.length > 0) {
       console.log('\n=== Failed Shows ===');
-      results.filter(r => !r.success).forEach(r => {
-        console.log(`- ${r.show}: ${r.error}`);
+      results.errors.forEach(({ show, error }) => {
+        console.log(`- ${show}: ${error}`);
       });
     }
 
