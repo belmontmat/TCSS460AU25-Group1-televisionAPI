@@ -122,6 +122,11 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+          description: "Title of a show"
         - name: actors
           in: query
           schema:
@@ -136,10 +141,27 @@ paths:
           in: query
           schema:
             type: string
+          description: "Television network (e.g. NBC)"
+        - name: studios
+          in: query
+          schema:
+            type: string
+          description: "Name of a studio/production company"
+        - name: status
+          in: query
+          schema:
+            type: string
+          description: "The status of a show (e.g. \"Returning Series,\"  \"Ended\")"
         - name: min_rating
           in: query
           schema:
             type: number
+          description: "Minimum rating (between 0 and 10)"
+        - name: max_rating
+          in: query
+          schema:
+            type: number
+          description: "Maximum rating (between 0 and 10)"
         - name: startDate
           in: query
           schema:
@@ -148,6 +170,16 @@ paths:
           in: query
           schema:
             type: string
+        - name: country
+          in: query
+          schema:
+            type: string
+          description: "Country of release (e.g. US)"
+        - name: creators
+          in: query
+          schema:
+            type: string
+          description: "Name of a show's creator"
         - $ref: '#/components/parameters/PageParam'
         - $ref: '#/components/parameters/LimitParam'
       responses:
